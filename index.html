@@ -3,13 +3,12 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Bateria Nec dia — Canvas (Autoscale + Simulação Integrado)</title>
+<title>Bateria Nec dia — Canvas (Autoscale + Simulação Integrado + Sandbox Export)</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;900&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <style>
   :root{
-    /* defaults (substituídos pelos temas) */
     --title-color:#003399;
     --bg-deep:#0b1220; --bg-1:#151a2b; --bg-2:#1f2336;
     --card:#12172a; --card-bd:#2e3654;
@@ -54,7 +53,6 @@
   *{box-sizing:border-box}
   html,body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial;background:#0c1123;color:var(--text)}
 
-  /* Barra (fora da exportação) */
   header{max-width:980px;margin:10px auto;padding:0 10px;display:flex;justify-content:space-between;align-items:center;gap:8px}
   .row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
   .controls{max-width:980px;margin:0 auto 8px;padding:0 10px;display:grid;grid-template-columns:1.2fr .8fr .8fr .6fr .6fr;gap:8px}
@@ -63,7 +61,7 @@
   input,select{width:100%;padding:10px 12px;border:1px solid var(--divider);border-radius:12px;background:#12182b;color:#e5edff;font-size:14px}
   button.btn{appearance:none;border:0;border-radius:12px;padding:10px 14px;font-weight:900;cursor:pointer;background:var(--title-color);color:#fff}
 
-  /* ====== ÁREA EXPORTADA (fixa 680×680, sem sobras) ====== */
+  /* ====== ÁREA EXPORTADA (fixa 680×680) ====== */
   #capture{
     width:680px;height:680px;margin:0 auto;border-radius:20px;overflow:hidden;
     border:1px solid var(--divider);
@@ -72,29 +70,25 @@
     display:grid; place-items:center;
   }
 
-  /* Root escalável: é o que a gente “shrink-to-fit” com transform */
+  /* Root escalável (shrink-to-fit) */
   .cap-scale{
-    width:680px;height:680px; transform-origin: top left; /* será escalado <= 1 */
+    width:680px;height:680px; transform-origin: top left;
     display:grid; grid-template-rows:84px 1fr;
   }
 
-  /* Título DENTRO da exportação */
   .cap-top{display:flex;align-items:center;justify-content:center;border-bottom:1px solid var(--divider);padding:0 12px}
   .title{display:flex;align-items:center;gap:12px;color:var(--title-color);font-weight:900;font-size:32px;text-align:center;white-space:nowrap;max-width:96%;overflow:hidden;text-overflow:ellipsis}
   .chip{font-size:12px;font-weight:900;color:#0b1220;background:#ffd54d;border:1px solid #ffd54d;border-radius:999px;padding:5px 12px}
 
-  /* Corpo preenche tudo */
   .cap-body{
     display:grid;grid-template-columns:44% 56%;gap:12px;padding:12px;
     align-items:stretch;min-height:0;min-width:0;
   }
   @media (max-width:760px){#capture{width:96vw;height:96vw}}
 
-  /* Bateria */
   .battery-card{background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));border:1px solid var(--divider);border-radius:14px;padding:10px;display:flex;align-items:center;justify-content:center;min-height:0}
   .battery{width:100%;max-width:320px;aspect-ratio:1/1.95}
 
-  /* Cards */
   .cards-wrap{display:grid;grid-template-rows:auto 1fr;gap:12px;min-width:0;min-height:0}
   .cards{display:grid;grid-template-columns:1fr 1fr;gap:12px;min-height:0}
   @media (max-width:760px){.cap-body{grid-template-columns:1fr}.cards{grid-template-columns:1fr 1fr}}
@@ -111,6 +105,13 @@
   .metric-sm{background:var(--card);border:1px solid var(--card-bd);border-radius:12px;padding:12px;display:flex;justify-content:space-between;align-items:center}
   .metric-sm .k{font-size:12px}.metric-sm .v{font-size:28px}
   .update-card{justify-self:end;align-self:end;background:var(--card);border:1px solid var(--card-bd);border-radius:10px;padding:8px 10px;font-size:12px;color:var(--muted)}
+
+  /* ===== Sandbox invisível para exportação ===== */
+  #exportSandbox{
+    position:fixed; left:-10000px; top:0;
+    width:680px; height:680px;
+    overflow:hidden; pointer-events:none; opacity:0; isolation:isolate;
+  }
 </style>
 </head>
 <body class="theme-midnight">
@@ -151,7 +152,6 @@
   <!-- ======= ÁREA EXPORTADA ======= -->
   <section id="capture" aria-label="Canvas Exportável">
     <div class="cap-scale" id="capRoot">
-      <!-- TÍTULO dentro do quadrado -->
       <div class="cap-top">
         <div class="title" id="titleFit">
           <span id="capTitle">Produto Ultra — Seguro Residencial Premium (Nec dia — Campanha Trimestre) — Edição Especial com Texto Muito Comprido Para Simular</span>
@@ -159,9 +159,7 @@
         </div>
       </div>
 
-      <!-- Corpo -->
       <div class="cap-body">
-        <!-- Bateria -->
         <div class="battery-card">
           <div class="battery">
             <svg viewBox="0 0 320 640" width="100%" height="100%" preserveAspectRatio="xMidYMid meet" role="img">
@@ -204,7 +202,6 @@
           </div>
         </div>
 
-        <!-- Cards -->
         <div class="cards-wrap">
           <div class="cards">
             <div class="card"><div class="k">Orçado</div><div class="v mono fit" id="mOrcado">R$ 1.234.567,89</div></div>
@@ -249,6 +246,9 @@
     </div>
   </section>
 
+  <!-- Sandbox invisível para exportação -->
+  <div id="exportSandbox" aria-hidden="true"></div>
+
 <script>
 (function(){
   const $ = s => document.querySelector(s);
@@ -256,10 +256,8 @@
   const fmtBRL = n => isNaN(n) ? '—' : n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
   const pctTxt = p => isFinite(p) ? `${Math.max(0,Math.min(999,p)).toFixed(1)}%` : '0%';
 
-  // Inputs (pré-preenchidos)
   const iTitulo = $('#titulo'), iOrcado = $('#orcado'), iRealizado = $('#realizado'), iWarn = $('#warn'), iOk = $('#ok');
 
-  // Refs UI
   const capRoot = $('#capRoot');
   const capTitle = $('#capTitle');
   const titleFit = $('#titleFit');
@@ -269,10 +267,8 @@
   const mVE = $('#mVE'), mFaltaVE = $('#mFaltaVE'), mStatus = $('#mStatus'), updateCard = $('#updateCard');
   const level = $('#level');
 
-  // Bateria
   const CAV_Y=120, CAV_H=420, LEVEL_BASE_Y=CAV_Y+CAV_H, LEVEL_X=64, LEVEL_W=192;
 
-  // Fit texto
   function fitText(el,max=32,min=12,step=1){
     if(!el) return; el.style.fontSize=max+'px';
     const p=el.parentElement;
@@ -285,14 +281,12 @@
     fitText(titleFit,32,16,1);
   }
 
-  // Autoscale/layout-fit (anti-corte)
   function layoutFit(){
     const containerW = 680, containerH = 680;
     capRoot.style.transform = 'scale(1)';
     capRoot.style.left = '0px';
     capRoot.style.top = '0px';
 
-    // Ajusta fontes antes de medir
     fitAll();
 
     const r = capRoot.getBoundingClientRect();
@@ -305,13 +299,11 @@
     capRoot.style.top = `${y}px`;
   }
 
-  // VE (9–18)
   const horasUteis = (d)=>Math.max(0,Math.min(9,(d.getHours()+d.getMinutes()/60+d.getSeconds()/3600)-9));
   const pctVE = (d)=> (horasUteis(d)/9)*100;
   const themeColor = v => getComputedStyle(document.body).getPropertyValue(v).trim();
 
   function update(){
-    // Título (usa input)
     capTitle.textContent = (iTitulo?.value || '').trim() || 'Produto — Simulação';
 
     const orcado = parseFloat((iOrcado?.value||'').toString().replace(',','.'));
@@ -333,12 +325,10 @@
     else if(pct>=warn){ stateColor=WARN; stateTxt='Em atenção'; }
     mState.textContent=stateTxt; mState.style.color=stateColor; mPct.style.color=stateColor;
 
-    // Bateria
     const h=(CAV_H*pctClamp)/100, y=LEVEL_BASE_Y-h;
     level.setAttribute('x',LEVEL_X); level.setAttribute('width',LEVEL_W);
     level.setAttribute('y',y.toFixed(2)); level.setAttribute('height',h.toFixed(2));
 
-    // Progresso + restante
     lblPct.textContent=pctTxt(pct);
     barFill.style.width=pctClamp+'%';
     barFill.style.background='linear-gradient(90deg,'+BAD+','+GOOD+')';
@@ -346,42 +336,73 @@
     const restante=(isFinite(orcado)&&isFinite(realizado))?Math.max(0,orcado-realizado):NaN;
     lblRestante.textContent=fmtBRL(restante);
 
-    // VE e Falta p/ VE
     const now=new Date(), ve=pctVE(now);
     mVE.textContent=pctTxt(ve);
     const esperado=isFinite(orcado)? orcado*(ve/100): NaN;
     const faltaVE=(isFinite(esperado)&&isFinite(realizado))? Math.max(0,esperado-realizado):NaN;
     mFaltaVE.textContent=fmtBRL(faltaVE);
 
-    // Status vs VE
     let svTxt='Abaixo da VE', svColor=BAD;
     if(pct>=ve+1){ svTxt='Acima da VE'; svColor=GOOD; }
     else if(Math.abs(pct-ve)<1){ svTxt='No ritmo'; svColor=WARN; }
     mStatus.textContent=svTxt; mStatus.style.color=svColor;
 
-    // Hora
     const p2=n=>String(n).padStart(2,'0');
     updateCard.textContent='Atualizado às '+p2(now.getHours())+':'+p2(now.getMinutes());
 
-    // Ajuste final de layout (anti-corte)
     requestAnimationFrame(layoutFit);
   }
 
-  // Export PNG: garante layout-fit antes do snapshot
+  /* ===== Export PNG usando clone isolado no sandbox ===== */
   async function exportPNG(){
     await new Promise(r=>requestAnimationFrame(()=>{ layoutFit(); r(); }));
-    const el=document.getElementById('capture');
-    const bg=getComputedStyle(document.body).getPropertyValue('--bg-deep').trim()||'#0b1220';
-    const canvas=await html2canvas(el,{backgroundColor:bg,scale:2,useCORS:true});
-    const blob=await new Promise(res=>canvas.toBlob(res,'image/png'));
+
+    const src = document.getElementById('capture');
+    const sandbox = document.getElementById('exportSandbox');
+    sandbox.innerHTML = '';
+
+    const clone = src.cloneNode(true);
+    clone.id = 'captureClone';
+    clone.style.width = '680px';
+    clone.style.height = '680px';
+    clone.style.margin = '0';
+    clone.style.borderRadius = src.style.borderRadius || '20px';
+    clone.style.transform = 'none';
+
+    const cloneRoot = clone.querySelector('.cap-scale, #capRoot');
+    if (cloneRoot){
+      cloneRoot.style.transform = 'none';
+      cloneRoot.style.left = '0';
+      cloneRoot.style.top = '0';
+      cloneRoot.style.position = 'relative';
+      cloneRoot.style.width = '680px';
+      cloneRoot.style.height = '680px';
+    }
+
+    sandbox.appendChild(clone);
+
+    const bg = getComputedStyle(document.body).getPropertyValue('--bg-deep').trim() || '#0b1220';
+    const canvas = await html2canvas(clone, {
+      backgroundColor: bg,
+      scale: Math.min(2, window.devicePixelRatio || 2),
+      useCORS: true,
+      foreignObjectRendering: false,
+      width: 680,
+      height: 680,
+      removeContainer: true
+    });
+
     const raw=(document.getElementById('titulo')?.value||'bateria-nec-dia').toLowerCase();
     const safe=raw.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,'-').replace(/[^\w\-]+/g,'');
     const d=new Date(), p=n=>String(n).padStart(2,'0');
     const name=`${safe}_${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}_${p(d.getHours())}${p(d.getMinutes())}.png`;
+
+    const blob=await new Promise(res=>canvas.toBlob(res,'image/png'));
     const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); URL.revokeObjectURL(a.href); a.remove();
+
+    sandbox.innerHTML = '';
   }
 
-  // Tema
   const themeSel = document.getElementById('theme');
   function applyTheme(name){
     document.body.classList.remove('theme-bbclean','theme-midnight','theme-slate','theme-sand');
@@ -390,7 +411,6 @@
   }
   themeSel.addEventListener('change', e=>applyTheme(e.target.value));
 
-  // Eventos de entrada
   ['input','change','keyup'].forEach(evt=>{
     ['titulo','orcado','realizado','warn','ok'].forEach(id=>{
       const el=document.getElementById(id); if(el) el.addEventListener(evt, update);
@@ -398,9 +418,7 @@
   });
   document.getElementById('btnExport').addEventListener('click', exportPNG);
 
-  // Init com simulação (já vem preenchido)
   applyTheme(themeSel.value);
-  // Primeira render + fit
   update();
 })();
 </script>
