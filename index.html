@@ -3,492 +3,370 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Bateria Nec dia — Canvas (Export estável)</title>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<title>NEC dia — Bateria (1:1 export estável)</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;900&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <style>
   :root{
     --title-color:#003399;
-    --bg-deep:#0b1220; --bg-1:#151a2b; --bg-2:#1f2336;
+    --bg0:#0b1220; --bg1:#151a2b; --bg2:#1f2336;
     --card:#12172a; --card-bd:#2e3654;
     --text:#eef2ff; --muted:#cbd5ff; --divider:#2e3654;
-    --bad:#f87171; --warn:#fbbf24; --good:#34d399;
-    --cavity-bottom:#152b2a; --cavity-top:#2c2a46;
-    --shell-top:#1a2136; --shell-bottom:#11172a;
+    --good:#16a34a; --warn:#f59e0b; --bad:#ef4444;
+    --shell-top:#1a2136; --shell-bot:#11172a;
+    --cavity-top:#2c2a46; --cavity-bot:#152b2a;
   }
-  .theme-bbclean{
+  /* Temas */
+  .theme-bb{ /* claro “BB Clean” */
     --title-color:#003399;
-    --bg-deep:#ffffff; --bg-1:#f9fbff; --bg-2:#f2f6ff;
-    --card:#ffffff; --card-bd:#e1e7ff; --text:#0b1533; --muted:#1a2a66; --divider:#e1e7ff;
-    --bad:#d92d20; --warn:#f59e0b; --good:#15803d;
-    --cavity-bottom:#e8edff; --cavity-top:#cdd8ff;
-    --shell-top:#ffffff; --shell-bottom:#f4f7ff;
+    --bg0:#ffffff; --bg1:#f5f8ff; --bg2:#eaf1ff;
+    --card:#ffffff; --card-bd:#dfe7ff;
+    --text:#0b1533; --muted:#1c2a66; --divider:#dfe7ff;
+    --good:#15803d; --warn:#f59e0b; --bad:#d92d20;
+    --shell-top:#ffffff; --shell-bot:#f1f5ff;
+    --cavity-top:#cdd8ff; --cavity-bot:#e8edff;
   }
   .theme-midnight{
     --title-color:#9ea5ff;
-    --bg-deep:#0b1220; --bg-1:#151a2b; --bg-2:#1f2336;
-    --card:#12172a; --card-bd:#2e3654; --text:#eef2ff; --muted:#cbd5ff; --divider:#2e3654;
-    --bad:#f87171; --warn:#fbbf24; --good:#34d399;
-    --cavity-bottom:#152b2a; --cavity-top:#2c2a46;
-    --shell-top:#1a2136; --shell-bottom:#11172a;
+    --bg0:#0b1220; --bg1:#151a2b; --bg2:#1f2336;
+    --card:#12172a; --card-bd:#2e3654;
+    --text:#eef2ff; --muted:#cbd5ff; --divider:#2e3654;
+    --good:#34d399; --warn:#fbbf24; --bad:#f87171;
+    --shell-top:#1a2136; --shell-bot:#11172a;
+    --cavity-top:#2c2a46; --cavity-bot:#152b2a;
   }
   .theme-slate{
     --title-color:#69c0ff;
-    --bg-deep:#0f1720; --bg-1:#141c27; --bg-2:#192330;
-    --card:#121a24; --card-bd:#2b3746; --text:#eaf2ff; --muted:#bcd0e8; --divider:#2b3746;
-    --bad:#fb7185; --warn:#f59e0b; --good:#22c55e;
-    --cavity-bottom:#17212e; --cavity-top:#213045;
-    --shell-top:#1b2430; --shell-bottom:#111a24;
+    --bg0:#0f1720; --bg1:#141c27; --bg2:#192330;
+    --card:#121a24; --card-bd:#2b3746;
+    --text:#eaf2ff; --muted:#bcd0e8; --divider:#2b3746;
+    --good:#22c55e; --warn:#f59e0b; --bad:#fb7185;
+    --shell-top:#1b2430; --shell-bot:#111a24;
+    --cavity-top:#213045; --cavity-bot:#17212e;
   }
   .theme-sand{
     --title-color:#f0b24a;
-    --bg-deep:#111315; --bg-1:#181b1e; --bg-2:#1e2125;
-    --card:#171a1d; --card-bd:#2d3238; --text:#faf8f5; --muted:#e2d8c8; --divider:#2d3238;
-    --bad:#ff6b6b; --warn:#f59e0b; --good:#16a34a;
-    --cavity-bottom:#2b2620; --cavity-top:#3a3128;
-    --shell-top:#222526; --shell-bottom:#16191a;
+    --bg0:#111315; --bg1:#181b1e; --bg2:#1e2125;
+    --card:#171a1d; --card-bd:#2d3238;
+    --text:#faf8f5; --muted:#e2d8c8; --divider:#2d3238;
+    --good:#16a34a; --warn:#f59e0b; --bad:#ff6b6b;
+    --shell-top:#222526; --shell-bot:#16191a;
+    --cavity-top:#3a3128; --cavity-bot:#2b2620;
   }
 
   *{box-sizing:border-box}
-  html,body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial;background:#0c1123;color:var(--text)}
+  html,body{margin:0;background:#0c1123;color:var(--text);font-family:Inter,system-ui,Segoe UI,Roboto,Arial}
 
-  header{max-width:980px;margin:10px auto;padding:0 10px;display:flex;justify-content:space-between;align-items:center;gap:8px}
-  .row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-  .controls{max-width:980px;margin:0 auto 8px;padding:0 10px;display:grid;grid-template-columns:1.2fr .8fr .8fr .6fr .6fr;gap:8px}
-  @media (max-width:860px){.controls{grid-template-columns:1fr 1fr}}
+  header{max-width:980px;margin:10px auto;padding:0 12px;display:flex;gap:8px;justify-content:space-between;align-items:center}
+  .controls{max-width:980px;margin:0 auto 8px;padding:0 12px;display:grid;grid-template-columns:1.4fr .8fr .8fr .6fr .6fr auto;gap:8px}
+  @media (max-width:880px){.controls{grid-template-columns:1fr 1fr}}
   label{font-size:11px;font-weight:800;color:#e5e7eb}
-  input,select{width:100%;padding:10px 12px;border:1px solid var(--divider);border-radius:12px;background:#12182b;color:#e5edff;font-size:14px}
-  button.btn{appearance:none;border:0;border-radius:12px;padding:10px 14px;font-weight:900;cursor:pointer;background:var(--title-color);color:#fff}
+  input,select,button{border-radius:12px;border:1px solid var(--divider);background:#12182b;color:#e5edff}
+  input,select{padding:10px 12px;font-size:14px}
+  button{padding:10px 14px;font-weight:900;border:0;cursor:pointer;background:var(--title-color);color:#fff}
 
-  /* ====== ÁREA EXPORTADA (fixa 680×680) ====== */
-  #capture{
-    width:680px;height:680px;margin:0 auto;border-radius:20px;overflow:hidden;
+  /* ====== ARTBOARD 1:1 (720×720) ====== */
+  #capture{width:720px;height:720px;margin:0 auto;border-radius:20px;overflow:hidden;
     border:1px solid var(--divider);
-    background:linear-gradient(160deg,var(--bg-deep) 0%,var(--bg-1) 50%,var(--bg-2) 100%);
-    position:relative; display:grid; place-items:center;
-  }
-
-  /* Root escalável (shrink-to-fit) */
-  .cap-scale{
-    width:680px;height:680px; transform-origin: top left;
-    display:grid; grid-template-rows:84px 1fr;
-  }
-
-  .cap-top{display:flex;align-items:center;justify-content:center;border-bottom:1px solid var(--divider);padding:0 12px}
-  .title{display:flex;align-items:center;gap:12px;color:var(--title-color);font-weight:900;font-size:32px;text-align:center;white-space:nowrap;max-width:96%;overflow:hidden;text-overflow:ellipsis}
-  .chip{font-size:12px;font-weight:900;color:#0b1220;background:#ffd54d;border:1px solid #ffd54d;border-radius:999px;padding:5px 12px}
-
-  .cap-body{
-    display:grid;grid-template-columns:44% 56%;gap:12px;padding:12px;
-    align-items:stretch;min-height:0;min-width:0;
-  }
+    background:linear-gradient(160deg,var(--bg0) 0%,var(--bg1) 45%,var(--bg2) 100%);
+    display:grid;grid-template-rows:84px 1fr}
   @media (max-width:760px){#capture{width:96vw;height:96vw}}
 
-  .battery-card{background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));border:1px solid var(--divider);border-radius:14px;padding:10px;display:flex;align-items:center;justify-content:center;min-height:0}
+  /* Título */
+  .cap-top{display:flex;align-items:center;justify-content:center;border-bottom:1px solid var(--divider);padding:0 10px}
+  .title{display:flex;align-items:center;gap:10px;max-width:96%;text-align:center}
+  .title h1{margin:0;color:var(--title-color);font-weight:900;line-height:1.08}
+  .title .chip{font-size:12px;font-weight:900;color:#0b1220;background:#ffd54d;border:1px solid #ffd54d;border-radius:999px;padding:6px 10px;white-space:nowrap}
+
+  /* Corpo */
+  .cap-body{display:grid;grid-template-columns:45% 55%;gap:10px;padding:10px;min-width:0;min-height:0}
+
+  /* Bateria */
+  .battery-card{background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));
+    border:1px solid var(--card-bd);border-radius:14px;display:flex;align-items:center;justify-content:center}
   .battery{width:100%;max-width:320px;aspect-ratio:1/1.95}
-
-  .cards-wrap{display:grid;grid-template-rows:auto 1fr;gap:12px;min-width:0;min-height:0}
-  .cards{display:grid;grid-template-columns:1fr 1fr;gap:12px;min-height:0}
-  @media (max-width:760px){.cap-body{grid-template-columns:1fr}.cards{grid-template-columns:1fr 1fr}}
-  .card{background:var(--card);border:1px solid var(--card-bd);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:6px;min-width:0;min-height:0}
+  svg{display:block}
+  .cards-wrap{display:grid;grid-template-rows:auto 1fr;gap:10px;min-width:0;min-height:0}
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;min-width:0}
+  .card{background:var(--card);border:1px solid var(--card-bd);border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:4px;min-width:0}
   .k{font-size:12px;font-weight:900;color:var(--muted)}
-  .v{font-size:32px;font-weight:900;line-height:1;color:var(--text)}
+  .v{font-weight:900;line-height:1; color:var(--text)}
   .mono{font-variant-numeric:tabular-nums}
-  .bottom-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;min-height:0}
-  @media (max-width:460px){.bottom-grid{grid-template-columns:1fr}}
-  .prog{grid-column:span 2;background:var(--card);border:1px solid var(--card-bd);border-radius:12px;padding:12px}
-  .prog-top{display:flex;justify-content:space-between;align-items:center}
-  .bar{height:12px;background:rgba(255,255,255,.06);border:1px solid var(--card-bd);border-radius:999px;overflow:hidden;margin-top:8px}
-  .fill{height:100%;width:0%}
-  .metric-sm{background:var(--card);border:1px solid var(--card-bd);border-radius:12px;padding:12px;display:flex;justify-content:space-between;align-items:center}
-  .metric-sm .k{font-size:12px}.metric-sm .v{font-size:28px}
-  .update-card{justify-self:end;align-self:end;background:var(--card);border:1px solid var(--card-bd);border-radius:10px;padding:8px 10px;font-size:12px;color:var(--muted)}
+  .bottom{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .prog{grid-column:span 2}
+  .prog .bar{height:12px;background:rgba(255,255,255,.06);border:1px solid var(--card-bd);border-radius:999px;overflow:hidden;margin-top:6px}
+  .prog .fill{height:100%;width:0%}
+  .mini{background:var(--card);border:1px solid var(--card-bd);border-radius:12px;padding:10px;display:flex;justify-content:space-between;align-items:center}
+  .upd{justify-self:end;align-self:end;background:var(--card);border:1px solid var(--card-bd);border-radius:10px;padding:6px 10px;font-size:12px;color:var(--muted)}
 
-  /* ===== Sandbox invisível para exportação ===== */
-  #exportSandbox{
-    position:fixed; left:-10000px; top:0;
-    width:680px; height:680px;
-    overflow:hidden; pointer-events:none; opacity:0; isolation:isolate;
-  }
+  /* Export sandbox invisível */
+  #exportSandbox{position:fixed;left:-10000px;top:0;width:720px;height:720px;overflow:hidden;opacity:0;pointer-events:none;isolation:isolate}
 </style>
 </head>
 <body class="theme-midnight">
-  <header>
-    <div class="row">
-      <label for="theme" style="color:#e5e7eb">Tema:</label>
-      <select id="theme">
-        <option value="theme-bbclean">BB Clean (claro)</option>
-        <option value="theme-midnight" selected>Midnight (escuro)</option>
-        <option value="theme-slate">Slate (cinza)</option>
-        <option value="theme-sand">Sand (quente)</option>
-      </select>
-    </div>
-    <div class="row">
-      <button class="btn" id="btnExport">Exportar PNG</button>
-    </div>
-  </header>
+<header>
+  <div>
+    <label for="theme">Tema</label>
+    <select id="theme">
+      <option value="theme-bb">BB Clean (claro)</option>
+      <option value="theme-midnight" selected>Midnight (escuro)</option>
+      <option value="theme-slate">Slate</option>
+      <option value="theme-sand">Sand</option>
+    </select>
+  </div>
+  <button id="btnExport">Exportar PNG 1:1</button>
+</header>
 
-  <!-- Controles (simulação) -->
-  <div class="controls">
-    <div><label for="titulo">Título do Produto</label>
-      <input id="titulo" type="text" value="Produto Ultra — Seguro Residencial Premium (Nec dia — Campanha Trimestre) — Edição Especial com Texto Muito Comprido Para Simular">
-    </div>
-    <div><label for="orcado">Orçado (R$)</label>
-      <input id="orcado" type="number" step="0.01" min="0" value="1234567.89">
-    </div>
-    <div><label for="realizado">Realizado (R$)</label>
-      <input id="realizado" type="number" step="0.01" min="0" value="345678.90">
-    </div>
-    <div><label for="warn">% Aviso</label>
-      <input id="warn" type="number" min="1" max="99" value="60">
-    </div>
-    <div><label for="ok">% OK</label>
-      <input id="ok" type="number" min="2" max="100" value="95">
+<div class="controls">
+  <div>
+    <label for="titulo">Título do Produto</label>
+    <input id="titulo" type="text" value="Produto Ultra — Seguro Residencial Premium (Nec dia)">
+  </div>
+  <div>
+    <label for="orcado">Orçado (R$)</label>
+    <input id="orcado" type="number" step="0.01" min="0" value="1234567.89">
+  </div>
+  <div>
+    <label for="realizado">Realizado (R$)</label>
+    <input id="realizado" type="number" step="0.01" min="0" value="345678.90">
+  </div>
+  <div>
+    <label for="warn">% Aviso</label>
+    <input id="warn" type="number" min="1" max="99" value="60">
+  </div>
+  <div>
+    <label for="ok">% OK</label>
+    <input id="ok" type="number" min="2" max="100" value="95">
+  </div>
+  <div>
+    <label>&nbsp;</label>
+    <button onclick="document.getElementById('btnExport').click()">Salvar PNG</button>
+  </div>
+</div>
+
+<!-- ====== ÁREA EXPORTÁVEL 720×720 ====== -->
+<section id="capture" aria-label="Canvas Exportável">
+  <div class="cap-top">
+    <div class="title">
+      <h1 id="capTitle" class="fit" style="font-size:34px;max-height:64px;overflow:hidden">Produto Ultra — Seguro Residencial Premium (Nec dia)</h1>
+      <span class="chip">Nec dia</span>
     </div>
   </div>
 
-  <!-- ======= ÁREA EXPORTADA ======= -->
-  <section id="capture" aria-label="Canvas Exportável">
-    <div class="cap-scale" id="capRoot">
-      <div class="cap-top">
-        <div class="title" id="titleFit">
-          <span id="capTitle">Produto Ultra — Seguro Residencial Premium (Nec dia — Campanha Trimestre) — Edição Especial com Texto Muito Comprido Para Simular</span>
-          <span class="chip">Nec dia</span>
-        </div>
-      </div>
+  <div class="cap-body">
+    <!-- BATERIA -->
+    <div class="battery-card">
+      <div class="battery">
+        <svg viewBox="0 0 320 640" width="100%" height="100%" preserveAspectRatio="xMidYMid meet" role="img">
+          <defs>
+            <linearGradient id="gShell" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="var(--shell-top)"/>
+              <stop offset="100%" stop-color="var(--shell-bot)"/>
+            </linearGradient>
+            <linearGradient id="gCav" x1="0" y1="1" x2="0" y2="0">
+              <stop offset="0%" stop-color="var(--cavity-bot)"/>
+              <stop offset="100%" stop-color="var(--cavity-top)"/>
+            </linearGradient>
+            <linearGradient id="gLevel" x1="0" y1="1" x2="0" y2="0">
+              <stop offset="0%" stop-color="var(--bad)"/>
+              <stop offset="50%" stop-color="var(--warn)"/>
+              <stop offset="100%" stop-color="var(--good)"/>
+            </linearGradient>
+            <clipPath id="clipCavity"><rect x="64" y="120" width="192" height="420" rx="28"/></clipPath>
+          </defs>
 
-      <div class="cap-body">
-        <div class="battery-card">
-          <div class="battery">
-            <svg viewBox="0 0 320 640" width="100%" height="100%" preserveAspectRatio="xMidYMid meet" role="img">
-              <defs>
-                <linearGradient id="gCavityBg" x1="0" x2="0" y1="1" y2="0">
-                  <stop offset="0%" stop-color="var(--cavity-bottom)"/>
-                  <stop offset="100%" stop-color="var(--cavity-top)"/>
-                </linearGradient>
-                <linearGradient id="gShell" x1="0" x2="0" y1="0" y2="1">
-                  <stop offset="0%" stop-color="var(--shell-top)"/>
-                  <stop offset="100%" stop-color="var(--shell-bottom)"/>
-                </linearGradient>
-                <linearGradient id="gLevel" x1="0" x2="0" y1="1" y2="0">
-                  <stop offset="0%" stop-color="#ef4444"/>
-                  <stop offset="50%" stop-color="#f59e0b"/>
-                  <stop offset="100%" stop-color="#16a34a"/>
-                </linearGradient>
-                <clipPath id="clipCavity"><rect x="64" y="120" width="192" height="420" rx="28" ry="28"/></clipPath>
-              </defs>
+          <rect x="48" y="96" width="224" height="472" rx="32" fill="url(#gShell)" stroke="var(--divider)" stroke-width="2"/>
+          <rect x="128" y="60" width="64" height="28" rx="10" fill="var(--shell-top)" stroke="var(--divider)" stroke-width="2"/>
 
-              <rect x="48" y="96" width="224" height="472" rx="32" fill="url(#gShell)" stroke="var(--divider)" stroke-width="2"/>
-              <rect x="128" y="60" width="64" height="28" rx="10" fill="var(--shell-top)" stroke="var(--divider)" stroke-width="2"/>
-
-              <g opacity=".18">
-                <rect x="66" y="540" width="188" height="8" rx="4" fill="var(--divider)"/>
-                <rect x="66" y="494" width="188" height="8" rx="4" fill="var(--divider)"/>
-                <rect x="66" y="448" width="188" height="8" rx="4" fill="var(--divider)"/>
-                <rect x="66" y="402" width="188" height="8" rx="4" fill="var(--divider)"/>
-                <rect x="66" y="356" width="188" height="8" rx="4" fill="var(--divider)"/>
-                <rect x="66" y="310" width="188" height="8" rx="4" fill="var(--divider)"/>
-              </g>
-
-              <g clip-path="url(#clipCavity)">
-                <rect x="64" y="120" width="192" height="420" fill="url(#gCavityBg)"/>
-                <rect id="level" x="64" y="540" width="192" height="0" fill="url(#gLevel)"/>
-                <rect x="64" y="120" width="192" height="420" fill="#ffffff" opacity=".06"/>
-              </g>
-              <rect x="64" y="120" width="192" height="420" rx="28" fill="transparent" stroke="var(--divider)" stroke-width="2"/>
-            </svg>
-          </div>
-        </div>
-
-        <div class="cards-wrap">
-          <div class="cards">
-            <div class="card"><div class="k">Orçado</div><div class="v mono fit" id="mOrcado">R$ 1.234.567,89</div></div>
-            <div class="card"><div class="k">Realizado</div><div class="v mono fit" id="mRealizado">R$ 345.678,90</div></div>
-            <div class="card"><div class="k">% Atingimento</div><div class="v mono fit" id="mPct">0%</div></div>
-            <div class="card"><div class="k">Status</div><div class="v mono fit" id="mState">—</div></div>
-          </div>
-
-          <div class="bottom-grid">
-            <div class="prog">
-              <div class="prog-top">
-                <div class="k">Progresso</div>
-                <div class="v mono fit" id="lblPct" style="font-size:28px">0%</div>
-              </div>
-              <div class="bar"><div class="fill" id="barFill"></div></div>
-            </div>
-
-            <div class="metric-sm">
-              <div class="k">Restante p/ Meta</div>
-              <div class="v mono fit" id="lblRestante">—</div>
-            </div>
-
-            <div class="metric-sm">
-              <div class="k">Velocidade esperada</div>
-              <div class="v mono fit" id="mVE">0%</div>
-            </div>
-
-            <div class="metric-sm">
-              <div class="k">Falta p/ VE</div>
-              <div class="v mono fit" id="mFaltaVE">—</div>
-            </div>
-
-            <div class="metric-sm">
-              <div class="k">Status vs VE</div>
-              <div class="v mono fit" id="mStatus">—</div>
-            </div>
-
-            <div class="update-card" id="updateCard">Atualizado às —:—</div>
-          </div>
-        </div>
+          <g clip-path="url(#clipCavity)">
+            <rect x="64" y="120" width="192" height="420" fill="url(#gCav)"/>
+            <rect id="level" x="64" y="540" width="192" height="0" fill="url(#gLevel)"/>
+            <rect x="64" y="120" width="192" height="420" fill="#fff" opacity=".06"/>
+          </g>
+          <rect x="64" y="120" width="192" height="420" rx="28" fill="transparent" stroke="var(--divider)" stroke-width="2"/>
+        </svg>
       </div>
     </div>
-  </section>
 
-  <!-- Sandbox invisível para exportação -->
-  <div id="exportSandbox" aria-hidden="true"></div>
+    <!-- CARDS -->
+    <div class="cards-wrap">
+      <div class="cards">
+        <div class="card"><div class="k">Orçado</div><div id="mOrcado" class="v mono fit" style="font-size:34px">—</div></div>
+        <div class="card"><div class="k">Realizado</div><div id="mRealizado" class="v mono fit" style="font-size:34px">—</div></div>
+        <div class="card"><div class="k">% Atingimento</div><div id="mPct" class="v mono fit" style="font-size:34px">0%</div></div>
+        <div class="card"><div class="k">Status</div><div id="mState" class="v fit" style="font-size:34px">—</div></div>
+      </div>
+
+      <div class="bottom">
+        <div class="card prog">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div class="k">Progresso</div>
+            <div id="lblPct" class="v mono fit" style="font-size:28px">0%</div>
+          </div>
+          <div class="bar"><div id="barFill" class="fill"></div></div>
+        </div>
+
+        <div class="mini"><span class="k">Restante p/ Meta</span><span id="lblRestante" class="v mono fit" style="font-size:28px">—</span></div>
+        <div class="mini"><span class="k">Velocidade esperada</span><span id="mVE" class="v mono fit" style="font-size:28px">0%</span></div>
+        <div class="mini"><span class="k">Falta p/ VE</span><span id="mFaltaVE" class="v mono fit" style="font-size:28px">—</span></div>
+        <div class="mini"><span class="k">Status vs VE</span><span id="mStatus" class="v fit" style="font-size:28px">—</span></div>
+        <div class="upd" id="updateCard">Atualizado às —:—</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div id="exportSandbox" aria-hidden="true"></div>
 
 <script>
 (function(){
-  const $ = s => document.querySelector(s);
-  const $$ = s => Array.from(document.querySelectorAll(s));
-  const fmtBRL = n => isNaN(n) ? '—' : n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-  const pctTxt = p => isFinite(p) ? `${Math.max(0,Math.min(999,p)).toFixed(1)}%` : '0%';
+  const $=s=>document.querySelector(s);
+  const $$=s=>Array.from(document.querySelectorAll(s));
+  const fmtBRL=n=>isNaN(n)?'—':n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+  const pctTxt=p=>isFinite(p)?`${Math.max(0,Math.min(999,p)).toFixed(1)}%`:'0%';
 
-  const iTitulo = $('#titulo'), iOrcado = $('#orcado'), iRealizado = $('#realizado'), iWarn = $('#warn'), iOk = $('#ok');
+  // Inputs
+  const iTitulo=$('#titulo'), iOrcado=$('#orcado'), iRealizado=$('#realizado'), iWarn=$('#warn'), iOk=$('#ok');
 
-  const capRoot = $('#capRoot');
-  const capTitle = $('#capTitle');
-  const titleFit = $('#titleFit');
+  // UI
+  const capTitle=$('#capTitle'), mOrcado=$('#mOrcado'), mRealizado=$('#mRealizado'), mPct=$('#mPct'), mState=$('#mState');
+  const lblPct=$('#lblPct'), barFill=$('#barFill'), lblRestante=$('#lblRestante');
+  const mVE=$('#mVE'), mFaltaVE=$('#mFaltaVE'), mStatus=$('#mStatus'), updateCard=$('#updateCard');
+  const level=$('#level');
 
-  const mOrcado = $('#mOrcado'), mRealizado = $('#mRealizado'), mPct = $('#mPct'), mState = $('#mState');
-  const lblPct = $('#lblPct'), barFill = $('#barFill'), lblRestante = $('#lblRestante');
-  const mVE = $('#mVE'), mFaltaVE = $('#mFaltaVE'), mStatus = $('#mStatus'), updateCard = $('#updateCard');
-  const level = $('#level');
+  // Bateria
+  const CAV_Y=120, CAV_H=420, BASE_Y=CAV_Y+CAV_H, LEVEL_X=64, LEVEL_W=192;
 
-  const CAV_Y=120, CAV_H=420, LEVEL_BASE_Y=CAV_Y+CAV_H, LEVEL_X=64, LEVEL_W=192;
-
-  function fitText(el,max=32,min=12,step=1){
-    if(!el) return; el.style.fontSize=max+'px';
-    const p=el.parentElement;
-    while((el.scrollWidth>p.clientWidth || el.scrollHeight>p.clientHeight*1.2) && max>min){
-      max-=step; el.style.fontSize=max+'px';
+  // ---------- FIT DE TEXTO (binário por largura/altura) ----------
+  function fitElement(el, min=12, max=parseFloat(getComputedStyle(el).fontSize)||32){
+    if(!el) return;
+    const parent=el.parentElement;
+    if(!parent) return;
+    let lo=min, hi=max, best=min;
+    // limita altura se tiver max-height inline
+    const maxH = parseFloat(el.style.maxHeight||'0')||Infinity;
+    for(let i=0;i<12;i++){
+      const mid=(lo+hi)/2;
+      el.style.fontSize=mid+'px';
+      const overW = el.scrollWidth>parent.clientWidth;
+      const overH = el.scrollHeight>(maxH===Infinity?parent.clientHeight:maxH);
+      if(!(overW||overH)){ best=mid; lo=mid; } else { hi=mid; }
+      if(Math.abs(hi-lo)<0.5) break;
     }
+    el.style.fontSize=Math.max(min,Math.floor(best))+'px';
+    el.style.wordBreak='break-word';
+    el.style.overflow='hidden';
   }
   function fitAll(){
-    $$('.fit').forEach(el=>fitText(el,32,12,1));
-    fitText(titleFit,32,16,1);
+    $$('.fit').forEach(el=>fitElement(el,12,40));
   }
 
-  function layoutFit(){
-    const containerW = 680, containerH = 680;
-    capRoot.style.transform = 'scale(1)';
-    capRoot.style.left = '0px';
-    capRoot.style.top = '0px';
+  // ---------- CÁLCULOS ----------
+  const horasUteis = d => Math.max(0, Math.min(9, (d.getHours()+d.getMinutes()/60+d.getSeconds()/3600) - 9));
+  const pctVE = d => (horasUteis(d)/9)*100;
 
-    // Ajusta fontes antes de medir
-    fitAll();
-
-    const r = capRoot.getBoundingClientRect();
-    const k = Math.min(1, containerW / r.width, containerH / r.height);
-    capRoot.style.transform = `scale(${k})`;
-    const x = (containerW - r.width * k)/2;
-    const y = (containerH - r.height * k)/2;
-    capRoot.style.position='absolute';
-    capRoot.style.left = `${x}px`;
-    capRoot.style.top = `${y}px`;
-  }
-
-  const horasUteis = (d)=>Math.max(0,Math.min(9,(d.getHours()+d.getMinutes}/60+d.getSeconds()/3600)-9));
-  // fix parentheses
-})();
-</script>
-<script>
-(function(){
-  const $ = s => document.querySelector(s);
-  const fmtBRL = n => isNaN(n) ? '—' : n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-  const pctTxt = p => isFinite(p) ? `${Math.max(0,Math.min(999,p)).toFixed(1)}%` : '0%';
-
-  const iTitulo = document.getElementById('titulo');
-  const iOrcado = document.getElementById('orcado');
-  const iRealizado = document.getElementById('realizado');
-  const iWarn = document.getElementById('warn');
-  const iOk = document.getElementById('ok');
-
-  const capTitle = document.getElementById('capTitle');
-  const mOrcado = document.getElementById('mOrcado');
-  const mRealizado = document.getElementById('mRealizado');
-  const mPct = document.getElementById('mPct');
-  const mState = document.getElementById('mState');
-  const lblPct = document.getElementById('lblPct');
-  const barFill = document.getElementById('barFill');
-  const lblRestante = document.getElementById('lblRestante');
-  const mVE = document.getElementById('mVE');
-  const mFaltaVE = document.getElementById('mFaltaVE');
-  const mStatus = document.getElementById('mStatus');
-  const updateCard = document.getElementById('updateCard');
-  const level = document.getElementById('level');
-  const capRoot = document.getElementById('capRoot');
-
-  const CAV_Y=120, CAV_H=420, LEVEL_BASE_Y=CAV_Y+CAV_H, LEVEL_X=64, LEVEL_W=192;
-
-  function fitText(el,max=32,min=12,step=1){
-    if(!el) return; el.style.fontSize=max+'px';
-    const p=el.parentElement;
-    while((el.scrollWidth>p.clientWidth || el.scrollHeight>p.clientHeight*1.2) && max>min){
-      max-=step; el.style.fontSize=max+'px';
-    }
-  }
-  function fitAll(){
-    document.querySelectorAll('.fit').forEach(el=>fitText(el,32,12,1));
-    fitText(document.getElementById('titleFit'),32,16,1);
-  }
-  function layoutFit(){
-    const containerW = 680, containerH = 680;
-    capRoot.style.transform = 'scale(1)';
-    capRoot.style.left = '0px';
-    capRoot.style.top = '0px';
-    fitAll();
-    const r = capRoot.getBoundingClientRect();
-    const k = Math.min(1, containerW / r.width, containerH / r.height);
-    capRoot.style.transform = `scale(${k})`;
-    const x = (containerW - r.width * k)/2;
-    const y = (containerH - r.height * k)/2;
-    capRoot.style.position='absolute';
-    capRoot.style.left = `${x}px`;
-    capRoot.style.top = `${y}px`;
-  }
-
-  const horasUteis = (d)=>Math.max(0,Math.min(9,(d.getHours()+d.getMinutes()/60+d.getSeconds()/3600)-9));
-  const pctVE = (d)=> (horasUteis(d)/9)*100;
-  const themeColor = v => getComputedStyle(document.body).getPropertyValue(v).trim();
+  function themeVar(v,def){ const x=getComputedStyle(document.body).getPropertyValue(v).trim(); return x||def; }
 
   function update(){
-    capTitle.textContent = (iTitulo?.value || '').trim() || 'Produto — Simulação';
+    capTitle.textContent=(iTitulo.value||'Produto / Desafio').trim();
 
-    const orcado = parseFloat((iOrcado?.value||'').toString().replace(',','.'));
-    const realizado = parseFloat((iRealizado?.value||'').toString().replace(',','.'));
-    const warn = Math.max(1,Math.min(99,parseFloat(iWarn?.value)||60));
-    const ok = Math.max(warn+1,Math.min(100,parseFloat(iOk?.value)||95));
+    const orcado=parseFloat((iOrcado.value||'').toString().replace(',','.'));
+    const realizado=parseFloat((iRealizado.value||'').toString().replace(',','.'));
+    const warn=Math.max(1,Math.min(99,parseFloat(iWarn.value)||60));
+    const ok=Math.max(warn+1,Math.min(100,parseFloat(iOk.value)||95));
 
-    mOrcado.textContent = fmtBRL(orcado);
-    mRealizado.textContent = fmtBRL(realizado);
+    mOrcado.textContent=fmtBRL(orcado);
+    mRealizado.textContent=fmtBRL(realizado);
 
-    const pct = (isFinite(orcado)&&orcado>0) ? (realizado/ orcado)*100 : 0;
-    const pctClamp = Math.max(0,Math.min(100,pct));
-    mPct.textContent = pctTxt(pct);
+    const pct = (isFinite(orcado)&&orcado>0) ? (realizado/orcado)*100 : 0;
+    const clamp = Math.max(0,Math.min(100,pct));
+    mPct.textContent=pctTxt(pct);
 
-    const BAD=getComputedStyle(document.body).getPropertyValue('--bad').trim()||'#ef4444';
-    const WARN=getComputedStyle(document.body).getPropertyValue('--warn').trim()||'#f59e0b';
-    const GOOD=getComputedStyle(document.body).getPropertyValue('--good').trim()||'#16a34a';
+    const BAD=themeVar('--bad','#ef4444'), WARN=themeVar('--warn','#f59e0b'), GOOD=themeVar('--good','#16a34a');
 
-    let stateColor=BAD, stateTxt='Abaixo do ritmo';
-    if(pct>=ok){ stateColor=GOOD; stateTxt='Meta no alvo'; }
-    else if(pct>=warn){ stateColor=WARN; stateTxt='Em atenção'; }
-    mState.textContent=stateTxt; mState.style.color=stateColor; mPct.style.color=stateColor;
+    let stTxt='Abaixo do ritmo', stCol=BAD;
+    if(pct>=ok){ stTxt='Meta no alvo'; stCol=GOOD; }
+    else if(pct>=warn){ stTxt='Em atenção'; stCol=WARN; }
+    mState.textContent=stTxt; mState.style.color=stCol; mPct.style.color=stCol;
 
-    const h=(CAV_H*pctClamp)/100, y=LEVEL_BASE_Y-h;
+    // Bateria
+    const h=(CAV_H*clamp)/100, y=BASE_Y-h;
     level.setAttribute('x',LEVEL_X); level.setAttribute('width',LEVEL_W);
     level.setAttribute('y',y.toFixed(2)); level.setAttribute('height',h.toFixed(2));
 
+    // Progresso
     lblPct.textContent=pctTxt(pct);
-    barFill.style.width=pctClamp+'%';
-    barFill.style.background='linear-gradient(90deg,'+BAD+','+GOOD+')';
+    barFill.style.width=clamp+'%';
+    barFill.style.background=`linear-gradient(90deg, ${BAD}, ${GOOD})`;
 
-    const restante=(isFinite(orcado)&&isFinite(realizado))?Math.max(0,orcado-realizado):NaN;
+    const restante=(isFinite(orcado)&&isFinite(realizado))? Math.max(0, orcado-realizado): NaN;
     lblRestante.textContent=fmtBRL(restante);
 
     const now=new Date(), ve=pctVE(now);
     mVE.textContent=pctTxt(ve);
     const esperado=isFinite(orcado)? orcado*(ve/100): NaN;
-    const faltaVE=(isFinite(esperado)&&isFinite(realizado))? Math.max(0,esperado-realizado):NaN;
-    mFaltaVE.textContent=fmtBRL(faltaVE);
+    mFaltaVE.textContent=fmtBRL((isFinite(esperado)&&isFinite(realizado))? Math.max(0,esperado-realizado): NaN);
 
-    let svTxt='Abaixo da VE', svColor=BAD;
-    if(pct>=ve+1){ svTxt='Acima da VE'; svColor=GOOD; }
-    else if(Math.abs(pct-ve)<1){ svTxt='No ritmo'; svColor=WARN; }
-    mStatus.textContent=svTxt; mStatus.style.color=svColor;
+    let vsTxt='Abaixo da VE', vsCol=BAD;
+    if(pct>=ve+1){ vsTxt='Acima da VE'; vsCol=GOOD; }
+    else if(Math.abs(pct-ve)<1){ vsTxt='No ritmo'; vsCol=WARN; }
+    mStatus.textContent=vsTxt; mStatus.style.color=vsCol;
 
     const p2=n=>String(n).padStart(2,'0');
-    updateCard.textContent='Atualizado às '+p2(now.getHours())+':'+p2(now.getMinutes());
+    updateCard.textContent=`Atualizado às ${p2(now.getHours())}:${p2(now.getMinutes())}`;
 
-    requestAnimationFrame(layoutFit);
+    // Fit final para garantir que tudo cabe (sem transform)
+    fitAll();
   }
 
-  /* ===== Export PNG com ajuste de fonte + layout antes do clone ===== */
+  // ---------- EXPORTAÇÃO (clone off-screen 720×720) ----------
   async function exportPNG(){
-    // 1) Ajusta textos e layout (garante que tudo cabe)
-    fitAll();
-    layoutFit();
-    await new Promise(r => requestAnimationFrame(r));
+    // 1) garante que textos cabem
+    update(); // já faz fitAll()
 
-    // 2) Clona para sandbox 680×680 sem transform
-    const src = document.getElementById('capture');
-    const sandbox = document.getElementById('exportSandbox');
-    sandbox.innerHTML = '';
-
-    const clone = src.cloneNode(true);
-    clone.id = 'captureClone';
-    clone.style.width = '680px';
-    clone.style.height = '680px';
-    clone.style.margin = '0';
-    clone.style.borderRadius = src.style.borderRadius || '20px';
-    clone.style.transform = 'none';
-    clone.style.position = 'relative';
-    clone.style.left = '0';
-    clone.style.top = '0';
-
-    const inner = clone.querySelector('.cap-scale, #capRoot');
-    if (inner){
-      inner.style.transform = 'none';
-      inner.style.position = 'relative';
-      inner.style.left = '0';
-      inner.style.top = '0';
-      inner.style.width = '680px';
-      inner.style.height = '680px';
-    }
-
+    // 2) clona o artboard para sandbox sem transformações
+    const src=document.getElementById('capture');
+    const sandbox=document.getElementById('exportSandbox');
+    sandbox.innerHTML='';
+    const clone=src.cloneNode(true);
+    clone.id='captureClone';
+    Object.assign(clone.style,{width:'720px',height:'720px',margin:'0',transform:'none',position:'relative',left:'0',top:'0'});
     sandbox.appendChild(clone);
 
-    // 3) Renderiza apenas o clone
-    const bg = getComputedStyle(document.body).getPropertyValue('--bg-deep').trim() || '#0b1220';
-    const canvas = await html2canvas(clone, {
-      backgroundColor: bg,
-      scale: 2,
-      width: 680,
-      height: 680,
-      useCORS: true
-    });
+    // 3) renderiza só o clone
+    const bg=themeVar('--bg0','#0b1220');
+    await new Promise(r=>requestAnimationFrame(r)); // aplica estilos
+    const canvas=await html2canvas(clone,{backgroundColor:bg,scale:2,width:720,height:720,useCORS:true});
 
-    // 4) Baixa o arquivo
-    const raw = (document.getElementById('titulo')?.value || 'bateria-nec-dia').toLowerCase();
-    const safe = raw.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,'-').replace(/[^\w\-]+/g,'');
+    // 4) download
+    const base=(iTitulo.value||'bateria-nec-dia').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,'-').replace(/[^\w\-]+/g,'');
     const d=new Date(), p=n=>String(n).padStart(2,'0');
-    const name=`${safe}_${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}_${p(d.getHours())}${p(d.getMinutes())}.png`;
+    const name=`${base}_${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}_${p(d.getHours())}${p(d.getMinutes())}.png`;
 
     const blob=await new Promise(res=>canvas.toBlob(res,'image/png'));
     const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); URL.revokeObjectURL(a.href); a.remove();
-
-    sandbox.innerHTML = '';
+    sandbox.innerHTML='';
   }
 
   // Tema
-  const themeSel = document.getElementById('theme');
+  const sel=$('#theme');
   function applyTheme(name){
-    document.body.classList.remove('theme-bbclean','theme-midnight','theme-slate','theme-sand');
+    document.body.classList.remove('theme-bb','theme-midnight','theme-slate','theme-sand');
     document.body.classList.add(name);
     update();
   }
-  themeSel.addEventListener('change', e=>applyTheme(e.target.value));
+  sel.addEventListener('change',e=>applyTheme(e.target.value));
 
-  ['input','change','keyup'].forEach(evt=>{
+  // Eventos
+  ['input','change','keyup'].forEach(ev=>{
     ['titulo','orcado','realizado','warn','ok'].forEach(id=>{
-      const el=document.getElementById(id); if(el) el.addEventListener(evt, update);
+      const el=document.getElementById(id); el&&el.addEventListener(ev,update);
     });
   });
-  document.getElementById('btnExport').addEventListener('click', exportPNG);
+  document.getElementById('btnExport').addEventListener('click',exportPNG);
 
-  applyTheme(themeSel.value);
+  // Inicializa
+  applyTheme(sel.value);
   update();
 })();
 </script>
