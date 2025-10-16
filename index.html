@@ -3,391 +3,346 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Bateria Nec dia — BB Impacto</title>
-
+<title>Bateria Nec dia — Canvas (sem cantos)</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@600;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;900&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-
 <style>
   :root{
-    --bb-blue:#003399; --bb-blue-2:#2a56c6; --bb-blue-deep:#001d66;
-    --bb-yellow:#ffcc00; --bb-yellow-soft:#ffe680;
-    --ok:#16a34a; --warn:#f59e0b; --bad:#ef4444;
-    --ink:#0b1226; --muted:#7a86a3; --border:#cfd7ff;
-    --radius:14px;
+    /* Defaults (substituídos pelo tema) */
+    --title-color:#003399;
+    --bg-deep:#0b1220; --bg-1:#171a2a; --bg-2:#231f3a;
+    --card:#131827; --card-bd:#2e3654;
+    --text:#eef2ff; --muted:#cbd5ff; --divider:#2e3654;
+    --bad:#f87171; --warn:#fbbf24; --good:#34d399;
+    --cavity-bottom:#152b2a; --cavity-top:#2c2a46;
+    --shell-top:#1a2136; --shell-bottom:#11172a;
   }
+  /* Temas */
+  .theme-bbclean{
+    --title-color:#003399;
+    --bg-deep:#ffffff; --bg-1:#f9fbff; --bg-2:#f2f6ff;
+    --card:#ffffff; --card-bd:#e1e7ff;
+    --text:#0b1533; --muted:#1a2a66; --divider:#e1e7ff;
+    --bad:#d92d20; --warn:#f59e0b; --good:#15803d;
+    --cavity-bottom:#e8edff; --cavity-top:#cdd8ff;
+    --shell-top:#ffffff; --shell-bottom:#f4f7ff;
+  }
+  .theme-midnight{
+    --title-color:#9ea5ff;
+    --bg-deep:#0b1220; --bg-1:#151a2b; --bg-2:#1f2336;
+    --card:#12172a; --card-bd:#2e3654;
+    --text:#eef2ff; --muted:#cbd5ff; --divider:#2e3654;
+    --bad:#f87171; --warn:#fbbf24; --good:#34d399;
+    --cavity-bottom:#152b2a; --cavity-top:#2c2a46;
+    --shell-top:#1a2136; --shell-bottom:#11172a;
+  }
+  .theme-slate{
+    --title-color:#69c0ff;
+    --bg-deep:#0f1720; --bg-1:#141c27; --bg-2:#192330;
+    --card:#121a24; --card-bd:#2b3746;
+    --text:#eaf2ff; --muted:#bcd0e8; --divider:#2b3746;
+    --bad:#fb7185; --warn:#f59e0b; --good:#22c55e;
+    --cavity-bottom:#17212e; --cavity-top:#213045;
+    --shell-top:#1b2430; --shell-bottom:#111a24;
+  }
+  .theme-sand{
+    --title-color:#f0b24a;
+    --bg-deep:#111315; --bg-1:#181b1e; --bg-2:#1e2125;
+    --card:#171a1d; --card-bd:#2d3238;
+    --text:#faf8f5; --muted:#e2d8c8; --divider:#2d3238;
+    --bad:#ff6b6b; --warn:#f59e0b; --good:#16a34a;
+    --cavity-bottom:#2b2620; --cavity-top:#3a3128;
+    --shell-top:#222526; --shell-bottom:#16191a;
+  }
+
   *{box-sizing:border-box}
-  html,body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial;background:#eef2ff;color:var(--ink)}
+  html,body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial;background:#0c1123;color:var(--text)}
+  header{max-width:980px;margin:10px auto;padding:0 10px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+  .row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .controls{max-width:980px;margin:0 auto 8px;padding:0 10px;display:grid;grid-template-columns:1.2fr .8fr .8fr .6fr .6fr;gap:8px}
+  @media (max-width:860px){.controls{grid-template-columns:1fr 1fr}}
+  label{font-size:11px;font-weight:800;color:#e5e7eb}
+  input,select{width:100%;padding:10px 12px;border:1px solid var(--divider);border-radius:12px;background:#12182b;color:#e5edff;font-size:14px}
+  button.btn{appearance:none;border:0;border-radius:12px;padding:10px 14px;font-weight:900;cursor:pointer;background:var(--title-color);color:#fff}
 
-  header{max-width:920px;margin:8px auto 4px;padding:0 10px;display:flex;gap:8px;align-items:center;justify-content:space-between}
-  header h1{margin:0;font-size:18px;font-weight:900}
-  .controls{max-width:920px;margin:0 auto;padding:0 10px 4px;display:grid;grid-template-columns:1.4fr .9fr .9fr .6fr .6fr;gap:8px;align-items:end}
-  label{font-size:11px;font-weight:800}
-  input[type="text"],input[type="number"]{width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:10px;font-size:14px;background:#fff;outline:none}
-  input:focus{border-color:#b9c4ff;box-shadow:0 0 0 3px rgba(42,86,198,.15)}
-  .btn{appearance:none;border:0;border-radius:10px;padding:9px 12px;font-weight:900;cursor:pointer;
-       background:linear-gradient(135deg,var(--bb-blue),var(--bb-blue-2));color:#fff;box-shadow:0 6px 14px rgba(0,51,153,.25)}
-  .btn.secondary{background:#f3f6ff;color:#1f2937;border:1px solid #dbe3ff}
-
-  /* ====== QUADRO EXPORTÁVEL (quadrado, margens reduzidas) ====== */
+  /* ==== ÁREA EXPORTADA (680 x 680) ==== */
   #capture{
-    width:640px; aspect-ratio:1/1; height:auto; margin:6px auto; border-radius:16px; overflow:hidden;
-    border:1px solid #c7cffd; position:relative;
-    /* Fundo BB forte */
-    background:
-      radial-gradient(720px 440px at 95% -5%, rgba(255,204,0,.36), transparent 60%),
-      linear-gradient(155deg, var(--bb-blue-deep) 0%, #1235ab 40%, #204ad1 100%);
+    width:680px;height:680px;margin:0 auto;border-radius:20px;overflow:hidden;
+    border:1px solid var(--divider);background-color:var(--bg-deep);
+    background-image:linear-gradient(160deg,var(--bg-deep) 0%,var(--bg-1) 50%,var(--bg-2) 100%);
+    display:grid;grid-template-rows:84px 1fr; /* título + corpo ocupa 100% */
   }
-
-  /* Topo enxuto */
-  .cap-top{
-    height:46px; display:flex; align-items:center; justify-content:space-between; padding:0 10px; color:#fff;
-    background:linear-gradient(135deg, rgba(0,31,102,.9), rgba(0,51,153,.92)); border-bottom:1px solid rgba(255,255,255,.15)
-  }
-  .cap-title{display:flex;align-items:center;gap:8px;font-weight:900;font-size:16px;letter-spacing:.2px}
-  .chip{font-size:10px;font-weight:900;color:#1f2937;background:linear-gradient(135deg,var(--bb-yellow),var(--bb-yellow-soft));border:1px solid #ffd84d;border-radius:999px;padding:2px 8px}
-
-  /* Corpo: bateria grande à esquerda, cards grandes à direita */
+  /* Título DENTRO do quadrado */
+  .cap-top{display:flex;align-items:center;justify-content:center;border-bottom:1px solid var(--divider);padding:0 12px}
+  .title{display:flex;align-items:center;gap:12px;color:var(--title-color);font-weight:900;font-size:32px;text-align:center}
+  .chip{font-size:12px;font-weight:900;color:#0b1220;background:#ffd54d;border:1px solid #ffd54d;border-radius:999px;padding:5px 12px}
+  /* Corpo preenche todo o espaço restante */
   .cap-body{
-    display:grid; grid-template-columns: minmax(220px, 42%) 1fr; gap:8px; padding:8px 8px; /* margens menores */
+    display:grid;grid-template-columns:44% 56%;gap:12px;padding:12px;
+    align-items:stretch;align-content:stretch;min-height:0; /* impede overflow */
   }
-
-  /* Bateria */
-  .battery-card{
-    background:linear-gradient(180deg,rgba(255,236,128,.25),rgba(255,236,128,.08) 60%, rgba(255,255,255,.06));
-    border:1px solid rgba(255,255,255,.18); border-radius:12px; padding:6px;
-    display:flex; align-items:center; justify-content:center;
-  }
-  .battery{
-    width: clamp(170px, 36vw, 220px);
-    height: calc(clamp(170px, 36vw, 220px) * 2); /* proporção 1:2 */
-    position:relative;
-  }
-
-  /* Cards grandes de impacto (sem legendas .p) */
-  .cards{
-    display:grid; grid-template-columns:1fr 1fr; gap:8px;
-  }
-  .card{
-    background:rgba(255,255,255,.96); border:1px solid rgba(205,214,255,.95);
-    border-radius:12px; padding:10px 12px; display:flex; flex-direction:column; gap:4px;
-  }
-  .k{font-size:11px;font-weight:900;color:#132042}
-  .v{font-size:26px;font-weight:900;line-height:1}
+  @media (max-width:760px){#capture{width:96vw;height:96vw}}
+  /* Bateria (100% contida) */
+  .battery-card{background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));border:1px solid var(--divider);border-radius:14px;padding:10px;display:flex;align-items:center;justify-content:center;min-height:0}
+  .battery{width:100%;max-width:320px;aspect-ratio:1/1.95}
+  .cards-wrap{display:grid;grid-template-rows:auto 1fr;gap:12px;min-width:0;min-height:0}
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:12px;min-height:0}
+  @media (max-width:760px){.cap-body{grid-template-columns:1fr}.cards{grid-template-columns:1fr 1fr}}
+  .card{background:var(--card);border:1px solid var(--card-bd);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:6px;min-width:0;min-height:0}
+  .k{font-size:12px;font-weight:900;color:var(--muted)}
+  .v{font-size:32px;font-weight:900;line-height:1;color:var(--text)}
   .mono{font-variant-numeric:tabular-nums}
-
-  /* Linha de progresso */
-  .progress{
-    grid-column: span 2;
-    display:grid; grid-template-columns:1fr 1fr; gap:8px;
-  }
-  .prog-card{background:rgba(255,255,255,.96); border:1px solid rgba(205,214,255,.95); border-radius:12px; padding:10px 12px}
-  .prog-top{display:flex;align-items:center;justify-content:space-between}
-  .bar{height:10px;background:rgba(232,238,255,.9);border-radius:999px;overflow:hidden;border:1px solid #d6defc;margin-top:6px}
+  .bottom-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;min-height:0}
+  @media (max-width:460px){.bottom-grid{grid-template-columns:1fr}}
+  .prog{grid-column:span 2;background:var(--card);border:1px solid var(--card-bd);border-radius:12px;padding:12px}
+  .prog-top{display:flex;justify-content:space-between;align-items:center}
+  .bar{height:12px;background:rgba(255,255,255,.06);border:1px solid var(--card-bd);border-radius:999px;overflow:hidden;margin-top:8px}
   .fill{height:100%;width:0%}
-
-  /* Rodapé mínimo */
-  .cap-bottom{display:flex;justify-content:space-between;align-items:center;padding:4px 8px;border-top:1px solid rgba(255,255,255,.15);color:#e9edff}
-  .stamp{font-size:11px}
-
-  /* Responsivo */
-  @media (max-width: 760px){
-    #capture{width:min(94vw, 620px)}
-    .cap-body{grid-template-columns:1fr}
-    .cards{grid-template-columns:1fr 1fr}
-    .v{font-size:24px}
-  }
-  @media (max-width: 430px){
-    .cards{grid-template-columns:1fr}
-    .progress{grid-template-columns:1fr}
-    .v{font-size:22px}
-  }
+  .metric-sm{background:var(--card);border:1px solid var(--card-bd);border-radius:12px;padding:12px;display:flex;justify-content:space-between;align-items:center}
+  .metric-sm .k{font-size:12px}.metric-sm .v{font-size:28px}
+  .update-card{justify-self:end;align-self:end;background:var(--card);border:1px solid var(--card-bd);border-radius:10px;padding:8px 10px;font-size:12px;color:var(--muted)}
 </style>
 </head>
-<body>
+<body class="theme-midnight">
   <header>
-    <h1>Bateria Nec dia — BB (Impacto)</h1>
-    <div style="display:flex;gap:8px">
+    <div class="row">
+      <label for="theme" style="color:#e5e7eb">Tema:</label>
+      <select id="theme">
+        <option value="theme-bbclean">BB Clean (claro)</option>
+        <option value="theme-midnight" selected>Midnight (escuro)</option>
+        <option value="theme-slate">Slate (cinza)</option>
+        <option value="theme-sand">Sand (quente)</option>
+      </select>
+    </div>
+    <div class="row">
       <button class="btn" id="btnExport">Exportar PNG</button>
-      <button class="btn secondary" id="btnReset">Limpar</button>
     </div>
   </header>
 
-  <!-- Controles enxutos -->
+  <!-- Controles (fora da exportação) -->
   <div class="controls">
-    <div>
-      <label for="titulo">Título do Produto</label>
-      <input id="titulo" type="text" placeholder="Ex.: Seguridade — Vida (Nec dia)"/>
-    </div>
-    <div>
-      <label for="orcado">Orçado (R$)</label>
-      <input id="orcado" type="number" step="0.01" min="0" placeholder="185000,00"/>
-    </div>
-    <div>
-      <label for="realizado">Realizado (R$)</label>
-      <input id="realizado" type="number" step="0.01" min="0" placeholder="29800,00"/>
-    </div>
-    <div>
-      <label for="warn">% Aviso</label>
-      <input id="warn" type="number" min="1" max="99" value="60"/>
-    </div>
-    <div>
-      <label for="ok">% OK</label>
-      <input id="ok" type="number" min="2" max="100" value="95"/>
-    </div>
+    <div><label for="titulo">Título do Produto</label><input id="titulo" type="text" placeholder="Ex.: Seguridade — Vida (Nec dia)"></div>
+    <div><label for="orcado">Orçado (R$)</label><input id="orcado" type="number" step="0.01" min="0" placeholder="185000,00"></div>
+    <div><label for="realizado">Realizado (R$)</label><input id="realizado" type="number" step="0.01" min="0" placeholder="29800,00"></div>
+    <div><label for="warn">% Aviso</label><input id="warn" type="number" min="1" max="99" value="60"></div>
+    <div><label for="ok">% OK</label><input id="ok" type="number" min="2" max="100" value="95"></div>
   </div>
 
-  <!-- ====== QUADRO EXPORTÁVEL ====== -->
-  <section id="capture" aria-label="Painel Quadrado Exportável">
+  <!-- ======= ÁREA EXPORTADA (680 × 680, sem sobra) ======= -->
+  <section id="capture" aria-label="Canvas Exportável">
+    <!-- TÍTULO dentro do quadrado -->
     <div class="cap-top">
-      <div class="cap-title"><span id="capTitle">Produto / Desafio</span><span class="chip">Nec dia</span></div>
-      <div style="font-size:11px;font-weight:900;background:rgba(0,0,0,.18);padding:5px 8px;border-radius:10px;border:1px solid rgba(255,255,255,.25)">Banco do Brasil</div>
+      <div class="title">
+        <span id="capTitle">Produto / Desafio</span>
+        <span class="chip">Nec dia</span>
+      </div>
     </div>
 
+    <!-- Corpo preenche todo o restante -->
     <div class="cap-body">
-      <!-- ESQUERDA: Bateria grande -->
+      <!-- Bateria -->
       <div class="battery-card">
-        <div class="battery" aria-label="Indicador de Bateria">
-          <svg viewBox="0 0 220 440" width="100%" height="100%" preserveAspectRatio="xMidYMid meet" role="img">
+        <div class="battery">
+          <svg viewBox="0 0 320 640" width="100%" height="100%" preserveAspectRatio="xMidYMid meet" role="img">
             <defs>
-              <!-- Cavidade com fundo azul BB -->
               <linearGradient id="gCavityBg" x1="0" x2="0" y1="1" y2="0">
-                <stop offset="0%" stop-color="#082a8a"/>
-                <stop offset="100%" stop-color="#1e45c9"/>
+                <stop offset="0%" stop-color="var(--cavity-bottom)"/>
+                <stop offset="100%" stop-color="var(--cavity-top)"/>
               </linearGradient>
-              <!-- Corpo -->
               <linearGradient id="gShell" x1="0" x2="0" y1="0" y2="1">
-                <stop offset="0%" stop-color="#f3f6ff"/>
-                <stop offset="100%" stop-color="#e5ebff"/>
+                <stop offset="0%" stop-color="var(--shell-top)"/>
+                <stop offset="100%" stop-color="var(--shell-bottom)"/>
               </linearGradient>
-              <!-- Nível -->
               <linearGradient id="gLevel" x1="0" x2="0" y1="1" y2="0">
                 <stop offset="0%" stop-color="#ef4444"/>
                 <stop offset="50%" stop-color="#f59e0b"/>
                 <stop offset="100%" stop-color="#16a34a"/>
               </linearGradient>
-              <clipPath id="clipCavity">
-                <rect x="36" y="70" width="148" height="300" rx="22" ry="22"/>
-              </clipPath>
+              <clipPath id="clipCavity"><rect x="64" y="120" width="192" height="420" rx="28" ry="28"/></clipPath>
             </defs>
 
-            <!-- Corpo + pino -->
-            <rect x="24" y="54" width="172" height="332" rx="26" fill="url(#gShell)" stroke="#cbd5e1" stroke-width="2"/>
-            <rect x="88" y="28" width="64" height="22" rx="9" fill="#dfe6ff" stroke="#cbd5e1" stroke-width="2"/>
+            <rect x="48" y="96" width="224" height="472" rx="32" fill="url(#gShell)" stroke="var(--divider)" stroke-width="2"/>
+            <rect x="128" y="60" width="64" height="28" rx="10" fill="var(--shell-top)" stroke="var(--divider)" stroke-width="2"/>
 
-            <!-- Marcas -->
             <g opacity=".18">
-              <rect x="38" y="338" width="144" height="6" rx="3" fill="#0f1e5c"/>
-              <rect x="38" y="294" width="144" height="6" rx="3" fill="#0f1e5c"/>
-              <rect x="38" y="250" width="144" height="6" rx="3" fill="#0f1e5c"/>
-              <rect x="38" y="206" width="144" height="6" rx="3" fill="#0f1e5c"/>
-              <rect x="38" y="162" width="144" height="6" rx="3" fill="#0f1e5c"/>
+              <rect x="66" y="540" width="188" height="8" rx="4" fill="var(--divider)"/>
+              <rect x="66" y="494" width="188" height="8" rx="4" fill="var(--divider)"/>
+              <rect x="66" y="448" width="188" height="8" rx="4" fill="var(--divider)"/>
+              <rect x="66" y="402" width="188" height="8" rx="4" fill="var(--divider)"/>
+              <rect x="66" y="356" width="188" height="8" rx="4" fill="var(--divider)"/>
+              <rect x="66" y="310" width="188" height="8" rx="4" fill="var(--divider)"/>
             </g>
 
-            <!-- Cavidade + nível -->
             <g clip-path="url(#clipCavity)">
-              <rect x="36" y="70" width="148" height="300" fill="url(#gCavityBg)"/>
-              <rect id="level" x="36" y="370" width="148" height="0" fill="url(#gLevel)"/>
-              <rect x="36" y="70" width="148" height="300" fill="#ffffff" opacity=".06"/>
+              <rect x="64" y="120" width="192" height="420" fill="url(#gCavityBg)"/>
+              <rect id="level" x="64" y="540" width="192" height="0" fill="url(#gLevel)"/>
+              <rect x="64" y="120" width="192" height="420" fill="#ffffff" opacity=".06"/>
             </g>
-
-            <rect x="36" y="70" width="148" height="300" rx="22" fill="transparent" stroke="#cbd5e1" stroke-width="2"/>
+            <rect x="64" y="120" width="192" height="420" rx="28" fill="transparent" stroke="var(--divider)" stroke-width="2"/>
           </svg>
         </div>
       </div>
 
-      <!-- DIREITA: Cards grandes, SEM legendas -->
-      <div style="display:grid; gap:8px">
+      <!-- Cards -->
+      <div class="cards-wrap">
         <div class="cards">
-          <div class="card">
-            <div class="k">Orçado</div>
-            <div class="v mono" id="mOrcado">—</div>
-          </div>
-          <div class="card">
-            <div class="k">Realizado</div>
-            <div class="v mono" id="mRealizado">—</div>
-          </div>
-          <div class="card">
-            <div class="k">% Atingimento</div>
-            <div class="v mono" id="mPct">0%</div>
-          </div>
-          <div class="card">
-            <div class="k">Status</div>
-            <div class="v mono" id="mState">—</div>
-          </div>
+          <div class="card"><div class="k">Orçado</div><div class="v mono fit" id="mOrcado">—</div></div>
+          <div class="card"><div class="k">Realizado</div><div class="v mono fit" id="mRealizado">—</div></div>
+          <div class="card"><div class="k">% Atingimento</div><div class="v mono fit" id="mPct">0%</div></div>
+          <div class="card"><div class="k">Status</div><div class="v mono fit" id="mState">—</div></div>
         </div>
 
-        <div class="progress">
-          <div class="prog-card">
+        <div class="bottom-grid">
+          <div class="prog">
             <div class="prog-top">
               <div class="k">Progresso</div>
-              <div class="v mono" id="lblPct" style="font-size:22px">0%</div>
+              <div class="v mono fit" id="lblPct" style="font-size:28px">0%</div>
             </div>
             <div class="bar"><div class="fill" id="barFill"></div></div>
           </div>
 
-          <div class="prog-card">
-            <div class="prog-top">
-              <div class="k">Restante p/ Meta</div>
-              <div class="v mono" id="lblRestante" style="font-size:22px">—</div>
-            </div>
+          <div class="metric-sm">
+            <div class="k">Restante p/ Meta</div>
+            <div class="v mono fit" id="lblRestante">—</div>
           </div>
 
-          <div class="prog-card" style="grid-column: span 2">
-            <div class="prog-top">
-              <div class="k">Velocidade esperada (9–18)</div>
-              <div class="v mono" id="mVE" style="font-size:22px">0%</div>
-            </div>
-            <!-- sem legenda -->
+          <div class="metric-sm">
+            <div class="k">Velocidade esperada</div>
+            <div class="v mono fit" id="mVE">0%</div>
           </div>
 
-          <div class="prog-card">
-            <div class="prog-top">
-              <div class="k">Falta p/ VE</div>
-              <div class="v mono" id="mFaltaVE" style="font-size:22px">—</div>
-            </div>
+          <div class="metric-sm">
+            <div class="k">Falta p/ VE</div>
+            <div class="v mono fit" id="mFaltaVE">—</div>
           </div>
 
-          <div class="prog-card">
-            <div class="prog-top">
-              <div class="k">Status vs VE</div>
-              <div class="v mono" id="mStatus" style="font-size:22px">—</div>
-            </div>
+          <div class="metric-sm">
+            <div class="k">Status vs VE</div>
+            <div class="v mono fit" id="mStatus">—</div>
           </div>
+
+          <div class="update-card" id="updateCard">Atualizado às —:—</div>
         </div>
-
       </div>
-    </div>
-
-    <div class="cap-bottom">
-      <div class="stamp" id="stamp">—</div>
-      <div class="stamp">PNG • 1:1 • Impacto visual</div>
     </div>
   </section>
 
 <script>
 (function(){
   const $ = s => document.querySelector(s);
-  const fmtBRL = n => isNaN(n) ? '—' : n.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
-  const pctTxt = p => isFinite(p) ? `${Math.max(0, Math.min(999, p)).toFixed(1)}%` : '0%';
+  const $$ = s => Array.from(document.querySelectorAll(s));
+  const fmtBRL = n => isNaN(n) ? '—' : n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+  const pctTxt = p => isFinite(p) ? `${Math.max(0,Math.min(999,p)).toFixed(1)}%` : '0%';
 
   // Inputs
-  const iTitulo = $('#titulo'), iOrcado = $('#orcado'), iRealizado = $('#realizado');
-  const iWarn = $('#warn'), iOk = $('#ok');
+  const iTitulo=$('#titulo'), iOrcado=$('#orcado'), iRealizado=$('#realizado'), iWarn=$('#warn'), iOk=$('#ok');
+  // UI
+  const capTitle=$('#capTitle'), mOrcado=$('#mOrcado'), mRealizado=$('#mRealizado'), mPct=$('#mPct'), mState=$('#mState');
+  const lblPct=$('#lblPct'), barFill=$('#barFill'), lblRestante=$('#lblRestante');
+  const mVE=$('#mVE'), mFaltaVE=$('#mFaltaVE'), mStatus=$('#mStatus'), updateCard=$('#updateCard');
+  const level=$('#level');
 
-  // Capture refs
-  const capTitle = $('#capTitle');
-  const mOrcado = $('#mOrcado'), mRealizado = $('#mRealizado');
-  const mPct = $('#mPct'), mState = $('#mState');
-  const lblPct = $('#lblPct'), barFill = $('#barFill'), lblRestante = $('#lblRestante');
-  const mVE = $('#mVE'), mFaltaVE = $('#mFaltaVE'), mStatus = $('#mStatus');
-  const stamp = $('#stamp');
+  // Bateria geom.
+  const CAV_Y=120, CAV_H=420, LEVEL_BASE_Y=CAV_Y+CAV_H, LEVEL_X=64, LEVEL_W=192;
 
-  // SVG battery geometry
-  const CAV_Y = 70, CAV_H = 300, LEVEL_BASE_Y = CAV_Y + CAV_H; // 370
-  const LEVEL_X = 36, LEVEL_W = 148;
-  const level = $('#level');
-
-  function horasUteisDecimais(now){
-    const h = now.getHours() + now.getMinutes()/60 + now.getSeconds()/3600;
-    const ini = 9, fim = 18;
-    if (h <= ini) return 0;
-    if (h >= fim) return (fim - ini);
-    return h - ini;
+  // Fit de texto
+  function fitText(el,max=32,min=12,step=1){
+    if(!el) return; el.style.fontSize=max+'px';
+    const p=el.parentElement;
+    while((el.scrollWidth>p.clientWidth || el.scrollHeight>p.clientHeight*1.35) && max>min){ max-=step; el.style.fontSize=max+'px'; }
   }
-  function pctVelocidadeEsperada(now){
-    const total = 9; // 9h úteis
-    const elapsed = horasUteisDecimais(now);
-    return Math.max(0, Math.min(1, elapsed/total)) * 100;
-  }
+  function fitAll(){ $$('.fit').forEach(el=>fitText(el,32,12,1)); }
+
+  // Horas úteis 9–18
+  const horasUteis = (d)=>Math.max(0,Math.min(9,(d.getHours()+d.getMinutes()/60+d.getSeconds()/3600)-9));
+  const pctVE = (d)=> (horasUteis(d)/9)*100;
+
+  function themeColor(varName){ return getComputedStyle(document.body).getPropertyValue(varName).trim(); }
 
   function update(){
-    const titulo = (iTitulo.value || 'Produto / Desafio').trim();
-    const orcado = parseFloat((iOrcado.value || '').toString().replace(',','.'));
-    const realizado = parseFloat((iRealizado.value || '').toString().replace(',','.'));
-    const warn = Math.max(1, Math.min(99, parseFloat(iWarn.value)||60));
-    const ok = Math.max(warn+1, Math.min(100, parseFloat(iOk.value)||95));
+    capTitle.textContent = (iTitulo?.value || 'Produto / Desafio').trim() || '—';
 
-    capTitle.textContent = titulo;
+    const orcado = parseFloat((iOrcado?.value||'').toString().replace(',','.'));
+    const realizado = parseFloat((iRealizado?.value||'').toString().replace(',','.'));
+    const warn = Math.max(1,Math.min(99,parseFloat(iWarn?.value)||60));
+    const ok = Math.max(warn+1,Math.min(100,parseFloat(iOk?.value)||95));
+
     mOrcado.textContent = fmtBRL(orcado);
     mRealizado.textContent = fmtBRL(realizado);
 
-    const pct = (isFinite(orcado) && orcado>0) ? (realizado/orcado)*100 : 0;
-    const pctClamp = Math.max(0, Math.min(100, pct));
+    const pct = (isFinite(orcado)&&orcado>0) ? (realizado/orcado)*100 : 0;
+    const pctClamp = Math.max(0,Math.min(100,pct));
     mPct.textContent = pctTxt(pct);
 
-    // Status por meta
-    let color = getComputedStyle(document.documentElement).getPropertyValue('--bad').trim();
-    let msg = 'Abaixo do ritmo';
-    if (pct >= ok){ color = getComputedStyle(document.documentElement).getPropertyValue('--ok').trim(); msg = 'Meta no alvo'; }
-    else if (pct >= warn){ color = getComputedStyle(document.documentElement).getPropertyValue('--warn').trim(); msg = 'Em atenção'; }
-    mState.textContent = msg; mState.style.color = color; mPct.style.color = color;
+    const BAD=themeColor('--bad')||'#ef4444', WARN=themeColor('--warn')||'#f59e0b', GOOD=themeColor('--good')||'#16a34a';
 
-    // Bateria: sobe de baixo pra cima
-    const h = (CAV_H * pctClamp) / 100;
-    const y = LEVEL_BASE_Y - h;
-    level.setAttribute('x', LEVEL_X);
-    level.setAttribute('width', LEVEL_W);
-    level.setAttribute('y', y.toFixed(2));
-    level.setAttribute('height', h.toFixed(2));
+    let stateColor=BAD, stateTxt='Abaixo do ritmo';
+    if(pct>=ok){ stateColor=GOOD; stateTxt='Meta no alvo'; }
+    else if(pct>=warn){ stateColor=WARN; stateTxt='Em atenção'; }
+    mState.textContent=stateTxt; mState.style.color=stateColor; mPct.style.color=stateColor;
 
-    // Progresso + restante
-    lblPct.textContent = pctTxt(pct);
-    barFill.style.width = `${pctClamp}%`;
-    barFill.style.background = color;
+    const h=(CAV_H*pctClamp)/100, y=LEVEL_BASE_Y-h;
+    level.setAttribute('x',LEVEL_X); level.setAttribute('width',LEVEL_W);
+    level.setAttribute('y',y.toFixed(2)); level.setAttribute('height',h.toFixed(2));
 
-    const restante = (isFinite(orcado) && isFinite(realizado)) ? Math.max(0, orcado - realizado) : NaN;
-    lblRestante.textContent = fmtBRL(restante);
+    lblPct.textContent=pctTxt(pct);
+    barFill.style.width=pctClamp+'%';
+    barFill.style.background='linear-gradient(90deg,'+BAD+','+GOOD+')';
 
-    // Velocidade esperada e falta p/ VE
-    const now = new Date();
-    const vePct = pctVelocidadeEsperada(now);
-    mVE.textContent = pctTxt(vePct);
+    const restante=(isFinite(orcado)&&isFinite(realizado))?Math.max(0,orcado-realizado):NaN;
+    lblRestante.textContent=fmtBRL(restante);
 
-    const esperadoAteAgora = (isFinite(orcado) ? (orcado * (vePct/100)) : NaN);
-    const faltaVE = (isFinite(esperadoAteAgora) && isFinite(realizado)) ? Math.max(0, esperadoAteAgora - realizado) : NaN;
-    mFaltaVE.textContent = fmtBRL(faltaVE);
+    const now=new Date(); const ve=pctVE(now);
+    mVE.textContent=pctTxt(ve);
+    const esperado = isFinite(orcado)? orcado*(ve/100): NaN;
+    const faltaVE = (isFinite(esperado)&&isFinite(realizado))? Math.max(0,esperado-realizado):NaN;
+    mFaltaVE.textContent=fmtBRL(faltaVE);
 
-    // Status vs VE
-    let statusTxt = 'Abaixo da VE';
-    if (pct >= vePct + 1) statusTxt = 'Acima da VE';
-    else if (Math.abs(pct - vePct) < 1) statusTxt = 'No ritmo';
-    mStatus.textContent = statusTxt;
-    mStatus.style.color = (pct >= vePct) ? getComputedStyle(document.documentElement).getPropertyValue('--ok').trim()
-                                         : getComputedStyle(document.documentElement).getPropertyValue('--bad').trim();
+    let svColor=BAD, svTxt='Abaixo da VE';
+    if(pct>=ve+1){ svTxt='Acima da VE'; svColor=GOOD; }
+    else if(Math.abs(pct-ve)<1){ svTxt='No ritmo'; svColor=WARN; }
+    mStatus.textContent=svTxt; mStatus.style.color=svColor;
+
+    const p2=n=>String(n).padStart(2,'0');
+    updateCard.textContent='Atualizado às '+p2(now.getHours())+':'+p2(now.getMinutes());
+
+    fitAll();
   }
 
-  function setStamp(){
-    const now = new Date(), p=n=>String(n).padStart(2,'0');
-    stamp.textContent = `Atualizado em ${p(now.getDate())}/${p(now.getMonth()+1)}/${now.getFullYear()} — ${p(now.getHours())}:${p(now.getMinutes())}`;
-  }
-
+  // Export PNG sem cantos brancos (preenche com cor do tema)
   async function exportPNG(){
-    const el = document.getElementById('capture');
-    const canvas = await html2canvas(el,{backgroundColor:'#ffffff', scale:2, useCORS:true});
+    const el=document.getElementById('capture');
+    const bg = getComputedStyle(document.body).getPropertyValue('--bg-deep').trim() || '#0b1220';
+    const canvas = await html2canvas(el,{backgroundColor:bg, scale:2, useCORS:true});
     const blob = await new Promise(res=>canvas.toBlob(res,'image/png'));
-    const raw = ($('#titulo').value || 'bateria-nec-dia-bb-impacto').toLowerCase();
+    const raw = ($('#titulo')?.value||'bateria-nec-dia').toLowerCase();
     const safe = raw.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,'-').replace(/[^\w\-]+/g,'');
-    const p=n=>String(n).padStart(2,'0'); const d=new Date();
-    const fname = `${safe}_${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}_${p(d.getHours())}${p(d.getMinutes())}.png`;
-    const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=fname; document.body.appendChild(a); a.click();
-    URL.revokeObjectURL(a.href); a.remove();
+    const d=new Date(), p=n=>String(n).padStart(2,'0');
+    const name=`${safe}_${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}_${p(d.getHours())}${p(d.getMinutes())}.png`;
+    const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); URL.revokeObjectURL(a.href); a.remove();
   }
+
+  // Tema
+  const themeSel = document.getElementById('theme');
+  function applyTheme(name){
+    document.body.classList.remove('theme-bbclean','theme-midnight','theme-slate','theme-sand');
+    document.body.classList.add(name);
+    update();
+  }
+  themeSel.addEventListener('change', e=>applyTheme(e.target.value));
 
   // Eventos
   ['input','change','keyup'].forEach(evt=>{
-    $('#titulo').addEventListener(evt, update);
-    $('#orcado').addEventListener(evt, update);
-    $('#realizado').addEventListener(evt, update);
-    $('#warn').addEventListener(evt, update);
-    $('#ok').addEventListener(evt, update);
+    ['titulo','orcado','realizado','warn','ok'].forEach(id=>{
+      const el=document.getElementById(id); if(el) el.addEventListener(evt, update);
+    });
   });
   document.getElementById('btnExport').addEventListener('click', exportPNG);
-  document.getElementById('btnReset').addEventListener('click', ()=>{ $('#titulo').value=''; $('#orcado').value=''; $('#realizado').value=''; $('#warn').value=60; $('#ok').value=95; update(); });
 
-  setInterval(setStamp, 15000);
-  setStamp(); update();
+  // Init
+  applyTheme(themeSel.value);
+  update();
 })();
 </script>
 </body>
