@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Bateria Nec dia — BB Compacto (Square + Mobile)</title>
+
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+<style>
+  :root{
+    --bb-blue:#003399; --bb-blue-2:#2a56c6; --bb-blue-deep:#001d66;
+    --bb-yellow:#ffcc00; --bb-yellow-soft:#ffe680;
+    --ink:#0f172a; --muted:#64748b; --border:#dfe4ff;
+    --ok:#16a34a; --warn:#f59e0b; --bad:#ef4444;
+    --radius:14px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial;color:var(--ink);background:#eef2ff}
+
+  header{max-width:920px;margin:10px auto 6px;padding:0 10px;display:flex;gap:8px;align-items:center;justify-content:space-between}
+  header h1{margin:0;font-size:18px;font-weight:800;letter-spacing:.2px}
+  .controls{max-width:920px;margin:0 auto;padding:0 10px 6px;display:grid;grid-template-columns:1.2fr .8fr .8fr .5fr .5fr;gap:8px;align-items:end}
+  label{font-size:11px;font-weight:800;color:#223}
+  input[type="text"],input[type="number"]{width:100%;padding:9px 10px;border:1px solid var(--border);border-radius:10px;font-size:14px;outline:none;background:#fff}
+  input:focus{border-color:#bfc9ff;box-shadow:0 0 0 3px rgba(42,86,198,.15)}
+  .btn{appearance:none;border:0;border-radius:10px;padding:9px 12px;font-weight:800;cursor:pointer;
+       background:linear-gradient(135deg,var(--bb-blue),var(--bb-blue-2));color:#fff;box-shadow:0 6px 14px rgba(0,51,153,.25)}
+  .btn.secondary{background:#f3f6ff;color:#1f2937;border:1px solid #dbe3ff;box-shadow:none}
+
+  /* QUADRO EXPORTÁVEL: Square + Mobile-friendly */
+  #capture{
+    width:600px; aspect-ratio:1 / 1; height:auto; /* fica sempre quadrado; em mobile a largura manda */
+    margin:8px auto; border-radius:18px; overflow:hidden; border:1px solid #cdd6ff; position:relative;
+    background:
+      repeating-linear-gradient(135deg, rgba(255,255,255,.06) 0 6px, rgba(255,255,255,.0) 6px 12px),
+      radial-gradient(700px 420px at 90% 0%, rgba(255,204,0,.35), transparent 60%),
+      linear-gradient(160deg, var(--bb-blue-deep) 0%, #0d2fa8 45%, #1e45c9 100%);
+  }
+
+  .cap-top{
+    height:52px; display:flex; align-items:center; justify-content:space-between; padding:0 12px; color:#fff;
+    background:linear-gradient(135deg, rgba(0,31,102,.85), rgba(0,51,153,.9));
+    border-bottom:1px solid rgba(255,255,255,.18)
+  }
+  .title{display:flex;align-items:center;gap:8px;font-weight:800}
+  .chip{font-size:10px;font-weight:900;color:#1f2937;background:linear-gradient(135deg,var(--bb-yellow),var(--bb-yellow-soft));border:1px solid #ffd84d;border-radius:999px;padding:3px 8px}
+
+  .cap-body{
+    display:grid; grid-template-columns: minmax(180px, 36%) 1fr; gap:10px; padding:10px;
+  }
+
+  /* Cartões/métricas */
+  .metrics, .metrics-2{display:grid; grid-template-columns:repeat(3,1fr); gap:8px}
+  .metric{background:rgba(255,255,255,.96); border:1px solid rgba(205,214,255,.9); border-radius:12px; padding:8px 10px; display:flex; flex-direction:column; gap:0}
+  .metric .k{font-size:10px; font-weight:800; color:#223; margin-bottom:1px}
+  .metric .v{font-size:17px; font-weight:900}
+  .metric .p{font-size:10px; color:#52607a; font-weight:700; margin-top:1px}
+  .mono{font-variant-numeric:tabular-nums}
+
+  /* Bateria — CARD e dimensões fluidas para mobile */
+  .battery-card{
+    background:
+      linear-gradient(180deg,rgba(255,236,128,.30),rgba(255,236,128,.08) 55%, rgba(255,255,255,.06)),
+      linear-gradient(180deg,rgba(255,255,255,.12),rgba(255,255,255,0));
+    border:1px solid rgba(255,255,255,.18); border-radius:14px; padding:8px;
+    display:flex; justify-content:center; align-items:center
+  }
+  .battery{
+    width: clamp(130px, 35vw, 170px);
+    height: calc(clamp(130px, 35vw, 170px) * 2); /* mantém proporção 1:2 */
+    position:relative
+  }
+
+  /* Progresso compacto */
+  .legend{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px}
+  .bar{height:7px;background:rgba(234,240,255,.85);border-radius:999px;overflow:hidden;border:1px solid #dae3ff}
+  .fill{height:100%;width:0%}
+
+  .cap-bottom{display:flex;justify-content:space-between;align-items:center;padding:6px 10px;border-top:1px solid rgba(255,255,255,.15);color:#e9edff}
+  .stamp{font-size:11px}
+
+  /* —— Responsividade —— */
+  @media (max-width: 840px){
+    .controls{grid-template-columns:1fr 1fr; gap:8px}
+  }
+  @media (max-width: 720px){
+    #capture{width:min(92vw, 560px)}
+    .cap-body{grid-template-columns:1fr; gap:8px}
+    .metrics, .metrics-2{grid-template-columns:1fr 1fr 1fr}
+  }
+  @media (max-width: 430px){
+    header h1{font-size:16px}
+    .metric .v{font-size:16px}
+    .cap-top{height:48px}
+    .title{gap:6px}
+    .chip{font-size:9px; padding:2px 7px}
+  }
+</style>
+</head>
+<body>
+  <header>
+    <h1>Bateria Nec dia — BB (Square + Mobile)</h1>
+    <div style="display:flex;gap:8px">
+      <button class="btn" id="btnExport">Exportar PNG</button>
+      <button class="btn secondary" id="btnReset">Limpar</button>
+    </div>
+  </header>
+
+  <!-- Controles rápidos -->
+  <div class="controls">
+    <div>
+      <label for="titulo">Título do Produto</label>
+      <input id="titulo" type="text" placeholder="Ex.: Seguridade — Vida (Nec dia)"/>
+    </div>
+    <div>
+      <label for="orcado">Orçado (R$)</label>
+      <input id="orcado" type="number" step="0.01" min="0" placeholder="185000,00"/>
+    </div>
+    <div>
+      <label for="realizado">Realizado (R$)</label>
+      <input id="realizado" type="number" step="0.01" min="0" placeholder="29800,00"/>
+    </div>
+    <div>
+      <label for="warn">% Aviso</label>
+      <input id="warn" type="number" min="1" max="99" value="60"/>
+    </div>
+    <div>
+      <label for="ok">% OK</label>
+      <input id="ok" type="number" min="2" max="100" value="95"/>
+    </div>
+  </div>
+
+  <!-- QUADRO EXPORTÁVEL (Square / responsivo) -->
+  <section id="capture" aria-label="Painel Quadrado Exportável">
+    <div class="cap-top">
+      <div class="title"><span id="capTitle">Produto / Desafio</span><span class="chip">Nec dia</span></div>
+      <div style="font-size:11px;font-weight:900;background:rgba(0,0,0,.18);padding:6px 10px;border-radius:10px;border:1px solid rgba(255,255,255,.25)">Banco do Brasil</div>
+    </div>
+
+    <div class="cap-body">
+      <!-- Esquerda — BATERIA + progresso -->
+      <div>
+        <div class="battery-card">
+          <div class="battery" aria-label="Indicador de Bateria">
+            <!-- SVG escalável conforme .battery -->
+            <svg viewBox="0 0 170 340" width="100%" height="100%" preserveAspectRatio="xMidYMid meet" role="img">
+              <defs>
+                <!-- FUNDO DA CAVIDADE: agora AZUL BB (mais moderno e com contraste) -->
+                <linearGradient id="gCavityBg" x1="0" x2="0" y1="1" y2="0">
+                  <stop offset="0%" stop-color="#082a8a"/>
+                  <stop offset="100%" stop-color="#1e45c9"/>
+                </linearGradient>
+
+                <!-- Corpo com leve brilho -->
+                <linearGradient id="gShell" x1="0" x2="0" y1="0" y2="1">
+                  <stop offset="0%" stop-color="#f2f5ff"/>
+                  <stop offset="100%" stop-color="#e7ecff"/>
+                </linearGradient>
+
+                <!-- Nível (R→Y→G) -->
+                <linearGradient id="gLevel" x1="0" x2="0" y1="1" y2="0">
+                  <stop offset="0%" stop-color="#ef4444"/>
+                  <stop offset="50%" stop-color="#f59e0b"/>
+                  <stop offset="100%" stop-color="#16a34a"/>
+                </linearGradient>
+
+                <!-- Área de recorte da cavidade -->
+                <clipPath id="clipCavity">
+                  <rect x="26" y="50" width="118" height="244" rx="20" ry="20"/>
+                </clipPath>
+              </defs>
+
+              <!-- Corpo + pino -->
+              <rect x="16" y="40" width="138" height="264" rx="24" fill="url(#gShell)" stroke="#cbd5e1" stroke-width="2"/>
+              <rect x="60" y="20" width="50" height="18" rx="8" fill="#dfe6ff" stroke="#cbd5e1" stroke-width="2"/>
+
+              <!-- Marcas -->
+              <g opacity=".18">
+                <rect x="28" y="272" width="114" height="5" rx="2.5" fill="#0f1e5c"/>
+                <rect x="28" y="228" width="114" height="5" rx="2.5" fill="#0f1e5c"/>
+                <rect x="28" y="184" width="114" height="5" rx="2.5" fill="#0f1e5c"/>
+                <rect x="28" y="140" width="114" height="5" rx="2.5" fill="#0f1e5c"/>
+                <rect x="28" y="96" width="114" height="5" rx="2.5" fill="#0f1e5c"/>
+              </g>
+
+              <!-- CAVIDADE com fundo azul + nível -->
+              <g clip-path="url(#clipCavity)">
+                <!-- Fundo da cavidade (NOVO, AZUL BB) -->
+                <rect x="26" y="50" width="118" height="244" fill="url(#gCavityBg)"/>
+                <!-- Nível que sobe -->
+                <rect id="level" x="26" y="294" width="118" height="0" fill="url(#gLevel)"/>
+                <!-- brilho sutil -->
+                <rect x="26" y="50" width="118" height="244" fill="#ffffff" opacity=".06"/>
+              </g>
+
+              <!-- Borda interna -->
+              <rect x="26" y="50" width="118" height="244" rx="20" fill="transparent" stroke="#cbd5e1" stroke-width="2"/>
+            </svg>
+          </div>
+        </div>
+
+        <div class="legend">
+          <div class="metric">
+            <div class="k">Progresso</div>
+            <div class="v mono" id="lblPct">0%</div>
+            <div class="bar"><div class="fill" id="barFill"></div></div>
+          </div>
+          <div class="metric">
+            <div class="k">Restante p/ Meta</div>
+            <div class="v mono" id="lblRestante">—</div>
+            <div class="p">Orçado - Realizado</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Direita — Métricas -->
+      <div style="display:grid;gap:8px">
+        <div class="metrics">
+          <div class="metric">
+            <div class="k">Orçado</div>
+            <div class="v mono" id="mOrcado">—</div>
+            <div class="p">Meta do dia</div>
+          </div>
+          <div class="metric">
+            <div class="k">Realizado</div>
+            <div class="v mono" id="mRealizado">—</div>
+            <div class="p">Entrega até agora</div>
+          </div>
+          <div class="metric">
+            <div class="k">% de Atingimento</div>
+            <div class="v mono" id="mPct">0%</div>
+            <div class="p" id="mState">Aguardando dados</div>
+          </div>
+        </div>
+
+        <div class="metrics-2">
+          <div class="metric">
+            <div class="k">Velocidade esperada (até agora)</div>
+            <div class="v mono" id="mVE">0%</div>
+            <div class="p">Horas úteis 9–18 (9h)</div>
+          </div>
+          <div class="metric">
+            <div class="k">Falta p/ VE</div>
+            <div class="v mono" id="mFaltaVE">—</div>
+            <div class="p">Quanto falta em R$ para o ritmo</div>
+          </div>
+          <div class="metric">
+            <div class="k">Status</div>
+            <div class="v mono" id="mStatus">—</div>
+            <div class="p">Progresso x VE</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cap-bottom">
+      <div class="stamp" id="stamp">—</div>
+      <div class="stamp">Exportação PNG • Square</div>
+    </div>
+  </section>
+
+<script>
+(function(){
+  const $ = s => document.querySelector(s);
+  const fmtBRL = n => isNaN(n) ? '—' : n.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
+  const pctTxt = p => isFinite(p) ? `${Math.max(0, Math.min(999, p)).toFixed(1)}%` : '0%';
+
+  // Inputs
+  const iTitulo = $('#titulo'), iOrcado = $('#orcado'), iRealizado = $('#realizado');
+  const iWarn = $('#warn'), iOk = $('#ok');
+
+  // Capture refs
+  const capTitle = $('#capTitle');
+  const mOrcado = $('#mOrcado'), mRealizado = $('#mRealizado');
+  const mPct = $('#mPct'), mState = $('#mState');
+  const lblPct = $('#lblPct'), barFill = $('#barFill'), lblRestante = $('#lblRestante');
+  const mVE = $('#mVE'), mFaltaVE = $('#mFaltaVE'), mStatus = $('#mStatus');
+  const stamp = $('#stamp');
+
+  // SVG battery refs / dimensões originais (serão escaladas pelo CSS)
+  const CAV_Y = 50, CAV_H = 244, LEVEL_BASE_Y = CAV_Y + CAV_H; // 294
+  const LEVEL_X = 26, LEVEL_W = 118;
+  const level = $('#level');
+
+  function horasUteisDecimais(now){
+    const h = now.getHours() + now.getMinutes()/60 + now.getSeconds()/3600;
+    const ini = 9, fim = 18;
+    if (h <= ini) return 0;
+    if (h >= fim) return (fim - ini);
+    return h - ini;
+  }
+  function pctVelocidadeEsperada(now){
+    const total = 9; // 9h úteis (9–18)
+    const elapsed = horasUteisDecimais(now);
+    return Math.max(0, Math.min(1, elapsed/total)) * 100;
+  }
+
+  function update(){
+    const titulo = (iTitulo.value || 'Produto / Desafio').trim();
+    const orcado = parseFloat((iOrcado.value || '').toString().replace(',','.'));
+    const realizado = parseFloat((iRealizado.value || '').toString().replace(',','.'));
+    const warn = Math.max(1, Math.min(99, parseFloat(iWarn.value)||60));
+    const ok = Math.max(warn+1, Math.min(100, parseFloat(iOk.value)||95));
+
+    capTitle.textContent = titulo;
+    mOrcado.textContent = fmtBRL(orcado);
+    mRealizado.textContent = fmtBRL(realizado);
+
+    const pct = (isFinite(orcado) && orcado>0) ? (realizado/orcado)*100 : 0;
+    const pctClamp = Math.max(0, Math.min(100, pct));
+    mPct.textContent = pctTxt(pct);
+    lblPct.textContent = pctTxt(pct);
+
+    // Estado por meta
+    let color = getComputedStyle(document.documentElement).getPropertyValue('--bad').trim();
+    let msg = 'Abaixo do ritmo (meta)';
+    if (pct >= ok){ color = getComputedStyle(document.documentElement).getPropertyValue('--ok').trim(); msg = 'Meta no alvo (Ótimo!)'; }
+    else if (pct >= warn){ color = getComputedStyle(document.documentElement).getPropertyValue('--warn').trim(); msg = 'Em atenção (acelerar)'; }
+    mState.textContent = msg; mPct.style.color = color;
+
+    // Bateria: sobe de baixo para cima
+    const h = (CAV_H * pctClamp) / 100;
+    const y = LEVEL_BASE_Y - h;
+    level.setAttribute('x', LEVEL_X);
+    level.setAttribute('width', LEVEL_W);
+    level.setAttribute('y', y.toFixed(2));
+    level.setAttribute('height', h.toFixed(2));
+
+    // Barra progresso e restante p/ meta
+    barFill.style.width = `${pctClamp}%`; barFill.style.background = color;
+    const restante = (isFinite(orcado) && isFinite(realizado)) ? Math.max(0, orcado - realizado) : NaN;
+    lblRestante.textContent = fmtBRL(restante);
+
+    // Velocidade esperada (9–18) e Falta p/ VE
+    const now = new Date();
+    const vePct = pctVelocidadeEsperada(now);
+    mVE.textContent = pctTxt(vePct);
+
+    const esperadoAteAgora = (isFinite(orcado) ? (orcado * (vePct/100)) : NaN);
+    const faltaVE = (isFinite(esperadoAteAgora) && isFinite(realizado)) ? Math.max(0, esperadoAteAgora - realizado) : NaN;
+    mFaltaVE.textContent = fmtBRL(faltaVE);
+
+    // Status vs VE
+    let statusTxt = 'Abaixo da velocidade esperada';
+    if (pct >= vePct + 1) statusTxt = 'Acima da velocidade esperada';
+    else if (Math.abs(pct - vePct) < 1) statusTxt = 'No ritmo esperado';
+    mStatus.textContent = statusTxt;
+    mStatus.style.color = (pct >= vePct) ? getComputedStyle(document.documentElement).getPropertyValue('--ok').trim()
+                                         : getComputedStyle(document.documentElement).getPropertyValue('--bad').trim();
+  }
+
+  function setStamp(){
+    const now = new Date(), p = n => String(n).padStart(2,'0');
+    stamp.textContent = `Atualizado em ${p(now.getDate())}/${p(now.getMonth()+1)}/${now.getFullYear()} — ${p(now.getHours())}:${p(now.getMinutes())}`;
+  }
+
+  async function exportPNG(){
+    const el = document.getElementById('capture');
+    const canvas = await html2canvas(el,{backgroundColor:'#ffffff', scale:2, useCORS:true});
+    const blob = await new Promise(res=>canvas.toBlob(res,'image/png'));
+    const raw = ($('#titulo').value || 'bateria-nec-dia-bb').toLowerCase();
+    const safe = raw.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,'-').replace(/[^\w\-]+/g,'');
+    const p=n=>String(n).padStart(2,'0'); const d=new Date();
+    const fname = `${safe}_${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}_${p(d.getHours())}${p(d.getMinutes())}.png`;
+    const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=fname; document.body.appendChild(a); a.click();
+    URL.revokeObjectURL(a.href); a.remove();
+  }
+
+  // Eventos
+  ['input','change','keyup'].forEach(evt=>{
+    $('#titulo').addEventListener(evt, update);
+    $('#orcado').addEventListener(evt, update);
+    $('#realizado').addEventListener(evt, update);
+    $('#warn').addEventListener(evt, update);
+    $('#ok').addEventListener(evt, update);
+  });
+  document.getElementById('btnExport').addEventListener('click', exportPNG);
+  document.getElementById('btnReset').addEventListener('click', ()=>{ $('#titulo').value=''; $('#orcado').value=''; $('#realizado').value=''; $('#warn').value=60; $('#ok').value=95; update(); });
+
+  setInterval(setStamp, 15000);
+  setStamp(); update();
+})();
+</script>
+</body>
+</html>
