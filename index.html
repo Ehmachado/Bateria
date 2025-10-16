@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Bateria Nec dia — Canvas (Autoscale + Simulação Integrado + Sandbox Export)</title>
+<title>Bateria Nec dia — Canvas (Export estável)</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;900&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
@@ -66,8 +66,7 @@
     width:680px;height:680px;margin:0 auto;border-radius:20px;overflow:hidden;
     border:1px solid var(--divider);
     background:linear-gradient(160deg,var(--bg-deep) 0%,var(--bg-1) 50%,var(--bg-2) 100%);
-    position:relative;
-    display:grid; place-items:center;
+    position:relative; display:grid; place-items:center;
   }
 
   /* Root escalável (shrink-to-fit) */
@@ -130,7 +129,7 @@
     </div>
   </header>
 
-  <!-- Controles (pré-preenchidos para simulação) -->
+  <!-- Controles (simulação) -->
   <div class="controls">
     <div><label for="titulo">Título do Produto</label>
       <input id="titulo" type="text" value="Produto Ultra — Seguro Residencial Premium (Nec dia — Campanha Trimestre) — Edição Especial com Texto Muito Comprido Para Simular">
@@ -287,8 +286,69 @@
     capRoot.style.left = '0px';
     capRoot.style.top = '0px';
 
+    // Ajusta fontes antes de medir
     fitAll();
 
+    const r = capRoot.getBoundingClientRect();
+    const k = Math.min(1, containerW / r.width, containerH / r.height);
+    capRoot.style.transform = `scale(${k})`;
+    const x = (containerW - r.width * k)/2;
+    const y = (containerH - r.height * k)/2;
+    capRoot.style.position='absolute';
+    capRoot.style.left = `${x}px`;
+    capRoot.style.top = `${y}px`;
+  }
+
+  const horasUteis = (d)=>Math.max(0,Math.min(9,(d.getHours()+d.getMinutes}/60+d.getSeconds()/3600)-9));
+  // fix parentheses
+})();
+</script>
+<script>
+(function(){
+  const $ = s => document.querySelector(s);
+  const fmtBRL = n => isNaN(n) ? '—' : n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+  const pctTxt = p => isFinite(p) ? `${Math.max(0,Math.min(999,p)).toFixed(1)}%` : '0%';
+
+  const iTitulo = document.getElementById('titulo');
+  const iOrcado = document.getElementById('orcado');
+  const iRealizado = document.getElementById('realizado');
+  const iWarn = document.getElementById('warn');
+  const iOk = document.getElementById('ok');
+
+  const capTitle = document.getElementById('capTitle');
+  const mOrcado = document.getElementById('mOrcado');
+  const mRealizado = document.getElementById('mRealizado');
+  const mPct = document.getElementById('mPct');
+  const mState = document.getElementById('mState');
+  const lblPct = document.getElementById('lblPct');
+  const barFill = document.getElementById('barFill');
+  const lblRestante = document.getElementById('lblRestante');
+  const mVE = document.getElementById('mVE');
+  const mFaltaVE = document.getElementById('mFaltaVE');
+  const mStatus = document.getElementById('mStatus');
+  const updateCard = document.getElementById('updateCard');
+  const level = document.getElementById('level');
+  const capRoot = document.getElementById('capRoot');
+
+  const CAV_Y=120, CAV_H=420, LEVEL_BASE_Y=CAV_Y+CAV_H, LEVEL_X=64, LEVEL_W=192;
+
+  function fitText(el,max=32,min=12,step=1){
+    if(!el) return; el.style.fontSize=max+'px';
+    const p=el.parentElement;
+    while((el.scrollWidth>p.clientWidth || el.scrollHeight>p.clientHeight*1.2) && max>min){
+      max-=step; el.style.fontSize=max+'px';
+    }
+  }
+  function fitAll(){
+    document.querySelectorAll('.fit').forEach(el=>fitText(el,32,12,1));
+    fitText(document.getElementById('titleFit'),32,16,1);
+  }
+  function layoutFit(){
+    const containerW = 680, containerH = 680;
+    capRoot.style.transform = 'scale(1)';
+    capRoot.style.left = '0px';
+    capRoot.style.top = '0px';
+    fitAll();
     const r = capRoot.getBoundingClientRect();
     const k = Math.min(1, containerW / r.width, containerH / r.height);
     capRoot.style.transform = `scale(${k})`;
@@ -318,7 +378,9 @@
     const pctClamp = Math.max(0,Math.min(100,pct));
     mPct.textContent = pctTxt(pct);
 
-    const BAD=themeColor('--bad')||'#ef4444', WARN=themeColor('--warn')||'#f59e0b', GOOD=themeColor('--good')||'#16a34a';
+    const BAD=getComputedStyle(document.body).getPropertyValue('--bad').trim()||'#ef4444';
+    const WARN=getComputedStyle(document.body).getPropertyValue('--warn').trim()||'#f59e0b';
+    const GOOD=getComputedStyle(document.body).getPropertyValue('--good').trim()||'#16a34a';
 
     let stateColor=BAD, stateTxt='Abaixo do ritmo';
     if(pct>=ok){ stateColor=GOOD; stateTxt='Meta no alvo'; }
@@ -353,10 +415,14 @@
     requestAnimationFrame(layoutFit);
   }
 
-  /* ===== Export PNG usando clone isolado no sandbox ===== */
+  /* ===== Export PNG com ajuste de fonte + layout antes do clone ===== */
   async function exportPNG(){
-    await new Promise(r=>requestAnimationFrame(()=>{ layoutFit(); r(); }));
+    // 1) Ajusta textos e layout (garante que tudo cabe)
+    fitAll();
+    layoutFit();
+    await new Promise(r => requestAnimationFrame(r));
 
+    // 2) Clona para sandbox 680×680 sem transform
     const src = document.getElementById('capture');
     const sandbox = document.getElementById('exportSandbox');
     sandbox.innerHTML = '';
@@ -368,32 +434,35 @@
     clone.style.margin = '0';
     clone.style.borderRadius = src.style.borderRadius || '20px';
     clone.style.transform = 'none';
+    clone.style.position = 'relative';
+    clone.style.left = '0';
+    clone.style.top = '0';
 
-    const cloneRoot = clone.querySelector('.cap-scale, #capRoot');
-    if (cloneRoot){
-      cloneRoot.style.transform = 'none';
-      cloneRoot.style.left = '0';
-      cloneRoot.style.top = '0';
-      cloneRoot.style.position = 'relative';
-      cloneRoot.style.width = '680px';
-      cloneRoot.style.height = '680px';
+    const inner = clone.querySelector('.cap-scale, #capRoot');
+    if (inner){
+      inner.style.transform = 'none';
+      inner.style.position = 'relative';
+      inner.style.left = '0';
+      inner.style.top = '0';
+      inner.style.width = '680px';
+      inner.style.height = '680px';
     }
 
     sandbox.appendChild(clone);
 
+    // 3) Renderiza apenas o clone
     const bg = getComputedStyle(document.body).getPropertyValue('--bg-deep').trim() || '#0b1220';
     const canvas = await html2canvas(clone, {
       backgroundColor: bg,
-      scale: Math.min(2, window.devicePixelRatio || 2),
-      useCORS: true,
-      foreignObjectRendering: false,
+      scale: 2,
       width: 680,
       height: 680,
-      removeContainer: true
+      useCORS: true
     });
 
-    const raw=(document.getElementById('titulo')?.value||'bateria-nec-dia').toLowerCase();
-    const safe=raw.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,'-').replace(/[^\w\-]+/g,'');
+    // 4) Baixa o arquivo
+    const raw = (document.getElementById('titulo')?.value || 'bateria-nec-dia').toLowerCase();
+    const safe = raw.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,'-').replace(/[^\w\-]+/g,'');
     const d=new Date(), p=n=>String(n).padStart(2,'0');
     const name=`${safe}_${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}_${p(d.getHours())}${p(d.getMinutes())}.png`;
 
@@ -403,6 +472,7 @@
     sandbox.innerHTML = '';
   }
 
+  // Tema
   const themeSel = document.getElementById('theme');
   function applyTheme(name){
     document.body.classList.remove('theme-bbclean','theme-midnight','theme-slate','theme-sand');
