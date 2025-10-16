@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>NEC dia — Bateria (1:1 export estável)</title>
+<title>Bateria Nec Dia — Final</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;900&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <style>
@@ -12,361 +12,290 @@
     --bg0:#0b1220; --bg1:#151a2b; --bg2:#1f2336;
     --card:#12172a; --card-bd:#2e3654;
     --text:#eef2ff; --muted:#cbd5ff; --divider:#2e3654;
-    --good:#16a34a; --warn:#f59e0b; --bad:#ef4444;
-    --shell-top:#1a2136; --shell-bot:#11172a;
-    --cavity-top:#2c2a46; --cavity-bot:#152b2a;
+    --good:#34d399; --warn:#fbbf24; --bad:#f87171;
   }
   /* Temas */
-  .theme-bb{ /* claro “BB Clean” */
-    --title-color:#003399;
-    --bg0:#ffffff; --bg1:#f5f8ff; --bg2:#eaf1ff;
-    --card:#ffffff; --card-bd:#dfe7ff;
-    --text:#0b1533; --muted:#1c2a66; --divider:#dfe7ff;
-    --good:#15803d; --warn:#f59e0b; --bad:#d92d20;
-    --shell-top:#ffffff; --shell-bot:#f1f5ff;
-    --cavity-top:#cdd8ff; --cavity-bot:#e8edff;
-  }
-  .theme-midnight{
-    --title-color:#9ea5ff;
-    --bg0:#0b1220; --bg1:#151a2b; --bg2:#1f2336;
-    --card:#12172a; --card-bd:#2e3654;
-    --text:#eef2ff; --muted:#cbd5ff; --divider:#2e3654;
-    --good:#34d399; --warn:#fbbf24; --bad:#f87171;
-    --shell-top:#1a2136; --shell-bot:#11172a;
-    --cavity-top:#2c2a46; --cavity-bot:#152b2a;
-  }
-  .theme-slate{
-    --title-color:#69c0ff;
-    --bg0:#0f1720; --bg1:#141c27; --bg2:#192330;
-    --card:#121a24; --card-bd:#2b3746;
-    --text:#eaf2ff; --muted:#bcd0e8; --divider:#2b3746;
-    --good:#22c55e; --warn:#f59e0b; --bad:#fb7185;
-    --shell-top:#1b2430; --shell-bot:#111a24;
-    --cavity-top:#213045; --cavity-bot:#17212e;
-  }
-  .theme-sand{
-    --title-color:#f0b24a;
-    --bg0:#111315; --bg1:#181b1e; --bg2:#1e2125;
-    --card:#171a1d; --card-bd:#2d3238;
-    --text:#faf8f5; --muted:#e2d8c8; --divider:#2d3238;
-    --good:#16a34a; --warn:#f59e0b; --bad:#ff6b6b;
-    --shell-top:#222526; --shell-bot:#16191a;
-    --cavity-top:#3a3128; --cavity-bot:#2b2620;
-  }
+  .theme-bb{--title-color:#003399;--bg0:#ffffff;--bg1:#f6f7ff;--bg2:#e8edff;--card:#ffffff;--text:#0a0f24;--muted:#2d3875;--good:#1b7f3f;--warn:#f59e0b;--bad:#d92d20;}
+  .theme-midnight{--title-color:#9ea5ff;--bg0:#0b1220;--bg1:#151a2b;--bg2:#1f2336;--card:#12172a;--text:#eef2ff;--muted:#aab3e6;--good:#22c55e;--warn:#fbbf24;--bad:#ef4444;}
+  .theme-slate{--title-color:#69c0ff;--bg0:#0f1720;--bg1:#141c27;--bg2:#192330;--card:#121a24;--text:#eaf2ff;--muted:#9fbad6;--good:#16a34a;--warn:#f59e0b;--bad:#f87171;}
+  .theme-sand{--title-color:#d8a85d;--bg0:#1b1815;--bg1:#221f1b;--bg2:#2b2722;--card:#2e2924;--text:#fdf6ec;--muted:#d9c9b1;--good:#22c55e;--warn:#fbbf24;--bad:#f87171;}
+  .theme-emerald{--title-color:#2dd4bf;--bg0:#00201b;--bg1:#02372f;--bg2:#03554a;--card:#063e35;--text:#ecfdf5;--muted:#a7f3d0;--good:#10b981;--warn:#f59e0b;--bad:#dc2626;}
+  .theme-sunset{--title-color:#f59e0b;--bg0:#2b1100;--bg1:#3b1700;--bg2:#522100;--card:#3a1500;--text:#fff7ed;--muted:#fbbf24;--good:#facc15;--warn:#fb923c;--bad:#dc2626;}
+  .theme-ocean{--title-color:#0ea5e9;--bg0:#011d2d;--bg1:#02314c;--bg2:#034769;--card:#023e5e;--text:#e0f2fe;--muted:#bae6fd;--good:#38bdf8;--warn:#fde047;--bad:#f87171;}
 
-  *{box-sizing:border-box}
-  html,body{margin:0;background:#0c1123;color:var(--text);font-family:Inter,system-ui,Segoe UI,Roboto,Arial}
+  body{margin:0;background:var(--bg0);color:var(--text);font-family:Inter,system-ui,Segoe UI,Roboto,Arial;transition:background .3s,color .3s}
+  header{max-width:1080px;margin:10px auto;padding:0 12px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+  .controls{max-width:1080px;margin:0 auto 10px;padding:0 12px;display:grid;grid-template-columns:1.3fr .8fr .8fr .6fr .6fr auto auto;gap:10px}
+  @media (max-width:900px){.controls{grid-template-columns:1fr 1fr}}
+  label{font-size:11px;font-weight:800;color:var(--muted)}
+  input,select,button{border-radius:12px;border:1px solid var(--divider);background:var(--card);color:var(--text);font-size:14px}
+  input,select{padding:10px 12px}
+  button{padding:10px 14px;font-weight:900;cursor:pointer;border:none}
+  .btn-primary{background:var(--title-color);color:#fff}
+  .btn-ghost{background:transparent;color:var(--text);border:1px solid var(--divider)}
 
-  header{max-width:980px;margin:10px auto;padding:0 12px;display:flex;gap:8px;justify-content:space-between;align-items:center}
-  .controls{max-width:980px;margin:0 auto 8px;padding:0 12px;display:grid;grid-template-columns:1.4fr .8fr .8fr .6fr .6fr auto;gap:8px}
-  @media (max-width:880px){.controls{grid-template-columns:1fr 1fr}}
-  label{font-size:11px;font-weight:800;color:#e5e7eb}
-  input,select,button{border-radius:12px;border:1px solid var(--divider);background:#12182b;color:#e5edff}
-  input,select{padding:10px 12px;font-size:14px}
-  button{padding:10px 14px;font-weight:900;border:0;cursor:pointer;background:var(--title-color);color:#fff}
-
-  /* ====== ARTBOARD 1:1 (720×720) ====== */
-  #capture{width:720px;height:720px;margin:0 auto;border-radius:20px;overflow:hidden;
+  /* Área exportável cresce para caber conteúdo */
+  #capture{
+    min-width:720px;min-height:720px;width:max-content;height:max-content;
+    margin:0 auto;border-radius:20px;overflow:hidden;
     border:1px solid var(--divider);
     background:linear-gradient(160deg,var(--bg0) 0%,var(--bg1) 45%,var(--bg2) 100%);
-    display:grid;grid-template-rows:84px 1fr}
-  @media (max-width:760px){#capture{width:96vw;height:96vw}}
+    display:grid;grid-template-rows:auto 1fr;
+  }
 
-  /* Título */
-  .cap-top{display:flex;align-items:center;justify-content:center;border-bottom:1px solid var(--divider);padding:0 10px}
-  .title{display:flex;align-items:center;gap:10px;max-width:96%;text-align:center}
-  .title h1{margin:0;color:var(--title-color);font-weight:900;line-height:1.08}
-  .title .chip{font-size:12px;font-weight:900;color:#0b1220;background:#ffd54d;border:1px solid #ffd54d;border-radius:999px;padding:6px 10px;white-space:nowrap}
+  .cap-top{display:flex;align-items:center;justify-content:center;border-bottom:1px solid var(--divider);padding:10px}
+  .title{display:flex;align-items:center;gap:10px;text-align:center;max-width:96%}
+  .title h1{margin:0;color:var(--title-color);font-weight:900;line-height:1.1;font-size:34px;word-break:break-word;transition:color .3s}
+  .chip{font-size:12px;font-weight:900;color:#0b1220;background:#ffd54d;border-radius:999px;padding:5px 10px}
 
-  /* Corpo */
-  .cap-body{display:grid;grid-template-columns:45% 55%;gap:10px;padding:10px;min-width:0;min-height:0}
+  .cap-body{display:grid;grid-template-columns:45% 55%;gap:12px;padding:12px}
+  .battery-card{background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));border:1px solid var(--card-bd);border-radius:14px;display:flex;align-items:center;justify-content:center}
+  .battery{width:100%;max-width:340px;aspect-ratio:1/1.95}
 
-  /* Bateria */
-  .battery-card{background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));
-    border:1px solid var(--card-bd);border-radius:14px;display:flex;align-items:center;justify-content:center}
-  .battery{width:100%;max-width:320px;aspect-ratio:1/1.95}
-  svg{display:block}
-  .cards-wrap{display:grid;grid-template-rows:auto 1fr;gap:10px;min-width:0;min-height:0}
-  .cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;min-width:0}
-  .card{background:var(--card);border:1px solid var(--card-bd);border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:4px;min-width:0}
+  .cards-wrap{display:grid;grid-template-rows:auto 1fr;gap:12px}
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .card{background:var(--card);border:1px solid var(--card-bd);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:6px}
   .k{font-size:12px;font-weight:900;color:var(--muted)}
-  .v{font-weight:900;line-height:1; color:var(--text)}
+  .v{font-weight:900;line-height:1;color:var(--text);font-size:30px;word-break:break-word;transition:color .3s}
   .mono{font-variant-numeric:tabular-nums}
-  .bottom{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-  .prog{grid-column:span 2}
-  .prog .bar{height:12px;background:rgba(255,255,255,.06);border:1px solid var(--card-bd);border-radius:999px;overflow:hidden;margin-top:6px}
-  .prog .fill{height:100%;width:0%}
-  .mini{background:var(--card);border:1px solid var(--card-bd);border-radius:12px;padding:10px;display:flex;justify-content:space-between;align-items:center}
+
+  .bottom{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .prog{grid-column:span 2;background:var(--card);border:1px solid var(--card-bd);border-radius:12px;padding:12px}
+  .bar{height:12px;background:rgba(255,255,255,.06);border:1px solid var(--card-bd);border-radius:999px;overflow:hidden;margin-top:6px}
+  .fill{height:100%;width:0%;background:var(--bad);transition:width .5s,background .5s}
+  .mini{background:var(--card);border:1px solid var(--card-bd);border-radius:12px;padding:12px;display:flex;justify-content:space-between;align-items:center}
   .upd{justify-self:end;align-self:end;background:var(--card);border:1px solid var(--card-bd);border-radius:10px;padding:6px 10px;font-size:12px;color:var(--muted)}
 
-  /* Export sandbox invisível */
-  #exportSandbox{position:fixed;left:-10000px;top:0;width:720px;height:720px;overflow:hidden;opacity:0;pointer-events:none;isolation:isolate}
+  #exportSandbox{position:fixed;left:-10000px;top:0;pointer-events:none;opacity:0}
 </style>
 </head>
 <body class="theme-midnight">
 <header>
-  <div>
-    <label for="theme">Tema</label>
+  <div style="display:flex;gap:8px;align-items:center">
+    <label for="theme">Tema:</label>
     <select id="theme">
-      <option value="theme-bb">BB Clean (claro)</option>
-      <option value="theme-midnight" selected>Midnight (escuro)</option>
+      <option value="theme-bb">BB Clean</option>
+      <option value="theme-midnight" selected>Midnight</option>
       <option value="theme-slate">Slate</option>
       <option value="theme-sand">Sand</option>
+      <option value="theme-emerald">Emerald</option>
+      <option value="theme-sunset">Sunset</option>
+      <option value="theme-ocean">Ocean</option>
     </select>
   </div>
-  <button id="btnExport">Exportar PNG 1:1</button>
+  <div style="display:flex;gap:8px">
+    <button id="btnClear" class="btn-ghost">Limpar</button>
+    <button id="btnExport" class="btn-primary">Exportar PNG</button>
+  </div>
 </header>
 
 <div class="controls">
-  <div>
-    <label for="titulo">Título do Produto</label>
-    <input id="titulo" type="text" value="Produto Ultra — Seguro Residencial Premium (Nec dia)">
-  </div>
-  <div>
-    <label for="orcado">Orçado (R$)</label>
-    <input id="orcado" type="number" step="0.01" min="0" value="1234567.89">
-  </div>
-  <div>
-    <label for="realizado">Realizado (R$)</label>
-    <input id="realizado" type="number" step="0.01" min="0" value="345678.90">
-  </div>
-  <div>
-    <label for="warn">% Aviso</label>
-    <input id="warn" type="number" min="1" max="99" value="60">
-  </div>
-  <div>
-    <label for="ok">% OK</label>
-    <input id="ok" type="number" min="2" max="100" value="95">
-  </div>
-  <div>
-    <label>&nbsp;</label>
-    <button onclick="document.getElementById('btnExport').click()">Salvar PNG</button>
-  </div>
+  <div><label for="titulo">Título do Produto</label><input id="titulo" value="Produto Ultra — Seguro Residencial Premium"></div>
+  <div><label for="orcado">Orçado (R$)</label><input id="orcado" type="number" value="1200000"></div>
+  <div><label for="realizado">Realizado (R$)</label><input id="realizado" type="number" value="600000"></div>
+  <div><label for="warn">% Aviso</label><input id="warn" type="number" value="60"></div>
+  <div><label for="ok">% OK</label><input id="ok" type="number" value="95"></div>
 </div>
 
-<!-- ====== ÁREA EXPORTÁVEL 720×720 ====== -->
-<section id="capture" aria-label="Canvas Exportável">
+<section id="capture">
   <div class="cap-top">
     <div class="title">
-      <h1 id="capTitle" class="fit" style="font-size:34px;max-height:64px;overflow:hidden">Produto Ultra — Seguro Residencial Premium (Nec dia)</h1>
+      <h1 id="capTitle">Produto Ultra — Seguro Residencial Premium</h1>
       <span class="chip">Nec dia</span>
     </div>
   </div>
 
   <div class="cap-body">
-    <!-- BATERIA -->
+    <!-- Bateria de pé -->
     <div class="battery-card">
       <div class="battery">
-        <svg viewBox="0 0 320 640" width="100%" height="100%" preserveAspectRatio="xMidYMid meet" role="img">
+        <svg viewBox="0 0 320 640" width="100%" height="100%">
           <defs>
-            <linearGradient id="gShell" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="var(--shell-top)"/>
-              <stop offset="100%" stop-color="var(--shell-bot)"/>
-            </linearGradient>
-            <linearGradient id="gCav" x1="0" y1="1" x2="0" y2="0">
-              <stop offset="0%" stop-color="var(--cavity-bot)"/>
-              <stop offset="100%" stop-color="var(--cavity-top)"/>
-            </linearGradient>
-            <linearGradient id="gLevel" x1="0" y1="1" x2="0" y2="0">
-              <stop offset="0%" stop-color="var(--bad)"/>
-              <stop offset="50%" stop-color="var(--warn)"/>
-              <stop offset="100%" stop-color="var(--good)"/>
-            </linearGradient>
             <clipPath id="clipCavity"><rect x="64" y="120" width="192" height="420" rx="28"/></clipPath>
           </defs>
-
-          <rect x="48" y="96" width="224" height="472" rx="32" fill="url(#gShell)" stroke="var(--divider)" stroke-width="2"/>
-          <rect x="128" y="60" width="64" height="28" rx="10" fill="var(--shell-top)" stroke="var(--divider)" stroke-width="2"/>
-
+          <rect x="48" y="96" width="224" height="472" rx="32" fill="#1a2136" stroke="#2e3654" stroke-width="2"/>
+          <rect x="128" y="60" width="64" height="28" rx="10" fill="#1a2136" stroke="#2e3654" stroke-width="2"/>
           <g clip-path="url(#clipCavity)">
-            <rect x="64" y="120" width="192" height="420" fill="url(#gCav)"/>
-            <rect id="level" x="64" y="540" width="192" height="0" fill="url(#gLevel)"/>
-            <rect x="64" y="120" width="192" height="420" fill="#fff" opacity=".06"/>
+            <rect x="64" y="120" width="192" height="420" fill="#2c2a46"/>
+            <rect id="level" x="64" y="540" width="192" height="0" fill="#16a34a"/>
           </g>
-          <rect x="64" y="120" width="192" height="420" rx="28" fill="transparent" stroke="var(--divider)" stroke-width="2"/>
         </svg>
       </div>
     </div>
 
-    <!-- CARDS -->
+    <!-- Cards -->
     <div class="cards-wrap">
       <div class="cards">
-        <div class="card"><div class="k">Orçado</div><div id="mOrcado" class="v mono fit" style="font-size:34px">—</div></div>
-        <div class="card"><div class="k">Realizado</div><div id="mRealizado" class="v mono fit" style="font-size:34px">—</div></div>
-        <div class="card"><div class="k">% Atingimento</div><div id="mPct" class="v mono fit" style="font-size:34px">0%</div></div>
-        <div class="card"><div class="k">Status</div><div id="mState" class="v fit" style="font-size:34px">—</div></div>
+        <div class="card"><div class="k">Orçado</div><div id="mOrcado" class="v mono">—</div></div>
+        <div class="card"><div class="k">Realizado</div><div id="mRealizado" class="v mono">—</div></div>
+        <div class="card"><div class="k">% Atingimento</div><div id="mPct" class="v mono">0%</div></div>
+        <div class="card"><div class="k">Status</div><div id="mState" class="v">—</div></div>
       </div>
 
       <div class="bottom">
-        <div class="card prog">
+        <div class="prog card">
           <div style="display:flex;justify-content:space-between;align-items:center">
             <div class="k">Progresso</div>
-            <div id="lblPct" class="v mono fit" style="font-size:28px">0%</div>
+            <div id="lblPct" class="v mono">0%</div>
           </div>
           <div class="bar"><div id="barFill" class="fill"></div></div>
         </div>
 
-        <div class="mini"><span class="k">Restante p/ Meta</span><span id="lblRestante" class="v mono fit" style="font-size:28px">—</span></div>
-        <div class="mini"><span class="k">Velocidade esperada</span><span id="mVE" class="v mono fit" style="font-size:28px">0%</span></div>
-        <div class="mini"><span class="k">Falta p/ VE</span><span id="mFaltaVE" class="v mono fit" style="font-size:28px">—</span></div>
-        <div class="mini"><span class="k">Status vs VE</span><span id="mStatus" class="v fit" style="font-size:28px">—</span></div>
+        <!-- Restante p/ Meta (título em cima, valor embaixo) -->
+        <div class="mini" style="flex-direction:column;align-items:flex-start">
+          <div class="k" style="margin-bottom:6px">Restante p/ Meta</div>
+          <div id="lblRestante" class="v mono" style="font-size:28px;text-align:left;width:100%">—</div>
+        </div>
+
+        <div class="mini"><div class="k">Velocidade esperada</div><div id="mVE" class="v mono">0%</div></div>
+
+        <!-- Falta p/ VE (título em cima, valor embaixo) -->
+        <div class="mini" style="flex-direction:column;align-items:flex-start">
+          <div class="k" style="margin-bottom:6px">Falta p/ VE</div>
+          <div id="mFaltaVE" class="v mono" style="font-size:28px;text-align:left;width:100%">—</div>
+        </div>
+
+        <div class="mini"><div class="k">Status vs VE</div><div id="mStatus" class="v">—</div></div>
         <div class="upd" id="updateCard">Atualizado às —:—</div>
       </div>
     </div>
   </div>
 </section>
 
-<div id="exportSandbox" aria-hidden="true"></div>
+<div id="exportSandbox"></div>
 
 <script>
 (function(){
-  const $=s=>document.querySelector(s);
-  const $$=s=>Array.from(document.querySelectorAll(s));
-  const fmtBRL=n=>isNaN(n)?'—':n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-  const pctTxt=p=>isFinite(p)?`${Math.max(0,Math.min(999,p)).toFixed(1)}%`:'0%';
+  const $ = s => document.querySelector(s);
+  const $$ = s => Array.from(document.querySelectorAll(s));
+  const fmtBRL = n => isNaN(n)?'—':n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+  const pctTxt = p => isFinite(p)?`${Math.max(0,Math.min(999,p)).toFixed(1)}%`:'0%';
+  const body = document.body;
 
-  // Inputs
-  const iTitulo=$('#titulo'), iOrcado=$('#orcado'), iRealizado=$('#realizado'), iWarn=$('#warn'), iOk=$('#ok');
+  // refs UI
+  const capTitle=$('#capTitle'), mOrcado=$('#mOrcado'), mRealizado=$('#mRealizado'), mPct=$('#mPct'),
+        mState=$('#mState'), lblPct=$('#lblPct'), barFill=$('#barFill'), lblRestante=$('#lblRestante'),
+        mVE=$('#mVE'), mFaltaVE=$('#mFaltaVE'), mStatus=$('#mStatus'), updateCard=$('#updateCard'),
+        level=$('#level'), capture=$('#capture'), sandbox=$('#exportSandbox');
 
-  // UI
-  const capTitle=$('#capTitle'), mOrcado=$('#mOrcado'), mRealizado=$('#mRealizado'), mPct=$('#mPct'), mState=$('#mState');
-  const lblPct=$('#lblPct'), barFill=$('#barFill'), lblRestante=$('#lblRestante');
-  const mVE=$('#mVE'), mFaltaVE=$('#mFaltaVE'), mStatus=$('#mStatus'), updateCard=$('#updateCard');
-  const level=$('#level');
-
-  // Bateria
-  const CAV_Y=120, CAV_H=420, BASE_Y=CAV_Y+CAV_H, LEVEL_X=64, LEVEL_W=192;
-
-  // ---------- FIT DE TEXTO (binário por largura/altura) ----------
-  function fitElement(el, min=12, max=parseFloat(getComputedStyle(el).fontSize)||32){
-    if(!el) return;
-    const parent=el.parentElement;
-    if(!parent) return;
-    let lo=min, hi=max, best=min;
-    // limita altura se tiver max-height inline
-    const maxH = parseFloat(el.style.maxHeight||'0')||Infinity;
-    for(let i=0;i<12;i++){
-      const mid=(lo+hi)/2;
-      el.style.fontSize=mid+'px';
-      const overW = el.scrollWidth>parent.clientWidth;
-      const overH = el.scrollHeight>(maxH===Infinity?parent.clientHeight:maxH);
-      if(!(overW||overH)){ best=mid; lo=mid; } else { hi=mid; }
-      if(Math.abs(hi-lo)<0.5) break;
-    }
-    el.style.fontSize=Math.max(min,Math.floor(best))+'px';
-    el.style.wordBreak='break-word';
-    el.style.overflow='hidden';
-  }
-  function fitAll(){
-    $$('.fit').forEach(el=>fitElement(el,12,40));
-  }
-
-  // ---------- CÁLCULOS ----------
-  const horasUteis = d => Math.max(0, Math.min(9, (d.getHours()+d.getMinutes()/60+d.getSeconds()/3600) - 9));
-  const pctVE = d => (horasUteis(d)/9)*100;
-
-  function themeVar(v,def){ const x=getComputedStyle(document.body).getPropertyValue(v).trim(); return x||def; }
+  // helpers
+  const getNum = sel => parseFloat($(sel).value.replace(',', '.')) || 0;
 
   function update(){
-    capTitle.textContent=(iTitulo.value||'Produto / Desafio').trim();
+    const titulo = $('#titulo').value || 'Produto';
+    const orcado = getNum('#orcado');
+    const realizado = getNum('#realizado');
+    const warn = getNum('#warn') || 60;
+    const ok = getNum('#ok') || 95;
 
-    const orcado=parseFloat((iOrcado.value||'').toString().replace(',','.'));
-    const realizado=parseFloat((iRealizado.value||'').toString().replace(',','.'));
-    const warn=Math.max(1,Math.min(99,parseFloat(iWarn.value)||60));
-    const ok=Math.max(warn+1,Math.min(100,parseFloat(iOk.value)||95));
+    capTitle.textContent = titulo;
+    mOrcado.textContent = fmtBRL(orcado);
+    mRealizado.textContent = fmtBRL(realizado);
 
-    mOrcado.textContent=fmtBRL(orcado);
-    mRealizado.textContent=fmtBRL(realizado);
+    const pct = orcado > 0 ? (realizado / orcado) * 100 : 0;
+    const clamp = Math.max(0, Math.min(100, pct));
+    mPct.textContent = pctTxt(pct);
+    lblPct.textContent = pctTxt(pct);
 
-    const pct = (isFinite(orcado)&&orcado>0) ? (realizado/orcado)*100 : 0;
-    const clamp = Math.max(0,Math.min(100,pct));
-    mPct.textContent=pctTxt(pct);
+    // cores do tema
+    const BAD = getComputedStyle(body).getPropertyValue('--bad').trim() || '#ef4444';
+    const WARN = getComputedStyle(body).getPropertyValue('--warn').trim() || '#f59e0b';
+    const GOOD = getComputedStyle(body).getPropertyValue('--good').trim() || '#16a34a';
+    let corAtual = BAD;
+    if (clamp >= ok) corAtual = GOOD;
+    else if (clamp >= warn) corAtual = WARN;
 
-    const BAD=themeVar('--bad','#ef4444'), WARN=themeVar('--warn','#f59e0b'), GOOD=themeVar('--good','#16a34a');
+    // barra & status por progresso/tema
+    barFill.style.width = clamp + '%';
+    barFill.style.background = corAtual;
+    mPct.style.color = corAtual;
+    mState.style.color = corAtual;
 
-    let stTxt='Abaixo do ritmo', stCol=BAD;
-    if(pct>=ok){ stTxt='Meta no alvo'; stCol=GOOD; }
-    else if(pct>=warn){ stTxt='Em atenção'; stCol=WARN; }
-    mState.textContent=stTxt; mState.style.color=stCol; mPct.style.color=stCol;
+    let stTxt = 'Abaixo do ritmo';
+    if (clamp >= ok) stTxt = 'Meta no alvo';
+    else if (clamp >= warn) stTxt = 'Em atenção';
+    mState.textContent = stTxt;
 
-    // Bateria
+    // bateria (nível e cor)
+    const CAV_Y=120, CAV_H=420, BASE_Y=CAV_Y+CAV_H;
     const h=(CAV_H*clamp)/100, y=BASE_Y-h;
-    level.setAttribute('x',LEVEL_X); level.setAttribute('width',LEVEL_W);
-    level.setAttribute('y',y.toFixed(2)); level.setAttribute('height',h.toFixed(2));
+    level.setAttribute('y', y.toFixed(2));
+    level.setAttribute('height', h.toFixed(2));
+    level.setAttribute('fill', corAtual);
 
-    // Progresso
-    lblPct.textContent=pctTxt(pct);
-    barFill.style.width=clamp+'%';
-    barFill.style.background=`linear-gradient(90deg, ${BAD}, ${GOOD})`;
+    // restante / VE
+    const restante = Math.max(0, orcado - realizado);
+    lblRestante.textContent = fmtBRL(restante);
 
-    const restante=(isFinite(orcado)&&isFinite(realizado))? Math.max(0, orcado-realizado): NaN;
-    lblRestante.textContent=fmtBRL(restante);
-
-    const now=new Date(), ve=pctVE(now);
-    mVE.textContent=pctTxt(ve);
-    const esperado=isFinite(orcado)? orcado*(ve/100): NaN;
-    mFaltaVE.textContent=fmtBRL((isFinite(esperado)&&isFinite(realizado))? Math.max(0,esperado-realizado): NaN);
+    const now = new Date();
+    const ve = (Math.max(0, Math.min(9, (now.getHours()+now.getMinutes()/60) - 9)) / 9) * 100;
+    mVE.textContent = pctTxt(ve);
+    const esperado = orcado * (ve/100);
+    const faltaVE = Math.max(0, esperado - realizado);
+    mFaltaVE.textContent = fmtBRL(faltaVE);
 
     let vsTxt='Abaixo da VE', vsCol=BAD;
-    if(pct>=ve+1){ vsTxt='Acima da VE'; vsCol=GOOD; }
-    else if(Math.abs(pct-ve)<1){ vsTxt='No ritmo'; vsCol=WARN; }
-    mStatus.textContent=vsTxt; mStatus.style.color=vsCol;
+    if (pct >= ve + 1) { vsTxt='Acima da VE'; vsCol=GOOD; }
+    else if (Math.abs(pct - ve) < 1) { vsTxt='No ritmo'; vsCol=WARN; }
+    mStatus.textContent = vsTxt;
+    mStatus.style.color = vsCol;
 
-    const p2=n=>String(n).padStart(2,'0');
-    updateCard.textContent=`Atualizado às ${p2(now.getHours())}:${p2(now.getMinutes())}`;
+    updateCard.textContent = `Atualizado às ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
 
-    // Fit final para garantir que tudo cabe (sem transform)
-    fitAll();
+    // garante dimensão exata p/ export
+    const r = capture.getBoundingClientRect();
+    capture.style.width = Math.ceil(r.width) + 'px';
+    capture.style.height= Math.ceil(r.height) + 'px';
   }
 
-  // ---------- EXPORTAÇÃO (clone off-screen 720×720) ----------
   async function exportPNG(){
-    // 1) garante que textos cabem
-    update(); // já faz fitAll()
-
-    // 2) clona o artboard para sandbox sem transformações
-    const src=document.getElementById('capture');
-    const sandbox=document.getElementById('exportSandbox');
-    sandbox.innerHTML='';
-    const clone=src.cloneNode(true);
-    clone.id='captureClone';
-    Object.assign(clone.style,{width:'720px',height:'720px',margin:'0',transform:'none',position:'relative',left:'0',top:'0'});
+    update();
+    const r = capture.getBoundingClientRect();
+    const w = Math.ceil(r.width), h = Math.ceil(r.height);
+    sandbox.innerHTML = '';
+    const clone = capture.cloneNode(true);
+    clone.style.width = w+'px';
+    clone.style.height= h+'px';
     sandbox.appendChild(clone);
-
-    // 3) renderiza só o clone
-    const bg=themeVar('--bg0','#0b1220');
-    await new Promise(r=>requestAnimationFrame(r)); // aplica estilos
-    const canvas=await html2canvas(clone,{backgroundColor:bg,scale:2,width:720,height:720,useCORS:true});
-
-    // 4) download
-    const base=(iTitulo.value||'bateria-nec-dia').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,'-').replace(/[^\w\-]+/g,'');
-    const d=new Date(), p=n=>String(n).padStart(2,'0');
-    const name=`${base}_${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}_${p(d.getHours())}${p(d.getMinutes())}.png`;
-
-    const blob=await new Promise(res=>canvas.toBlob(res,'image/png'));
-    const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); URL.revokeObjectURL(a.href); a.remove();
+    await new Promise(r=>requestAnimationFrame(r));
+    const bg = getComputedStyle(document.body).getPropertyValue('--bg0').trim() || '#0b1220';
+    const canvas = await html2canvas(clone,{backgroundColor:bg,scale:2,width:w,height:h,useCORS:true});
+    const blob = await new Promise(res=>canvas.toBlob(res,'image/png'));
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'bateria_nec_dia.png';
+    document.body.appendChild(a); a.click(); a.remove();
     sandbox.innerHTML='';
   }
 
-  // Tema
-  const sel=$('#theme');
-  function applyTheme(name){
-    document.body.classList.remove('theme-bb','theme-midnight','theme-slate','theme-sand');
-    document.body.classList.add(name);
+  function clearAll(){
+    $('#titulo').value='';
+    $('#orcado').value='';
+    $('#realizado').value='';
+    $('#warn').value='60';
+    $('#ok').value='95';
     update();
   }
-  sel.addEventListener('change',e=>applyTheme(e.target.value));
 
-  // Eventos
-  ['input','change','keyup'].forEach(ev=>{
-    ['titulo','orcado','realizado','warn','ok'].forEach(id=>{
-      const el=document.getElementById(id); el&&el.addEventListener(ev,update);
+  // Bind de eventos (inputs + change) — FUNCIONANDO
+  function bindEvents(){
+    $$('#theme').forEach?null:0; // no-op só pra evitar tree-shake
+    ['#titulo','#orcado','#realizado','#warn','#ok'].forEach(sel=>{
+      const el = $(sel);
+      el.addEventListener('input', update);
+      el.addEventListener('change', update);
     });
-  });
-  document.getElementById('btnExport').addEventListener('click',exportPNG);
+    $('#theme').addEventListener('change', e=>{
+      // troca de classe do body para o tema selecionado
+      body.className = e.target.value;
+      update();
+    });
+    $('#btnExport').addEventListener('click', exportPNG);
+    $('#btnClear').addEventListener('click', clearAll);
+  }
 
   // Inicializa
-  applyTheme(sel.value);
+  bindEvents();
   update();
 })();
 </script>
