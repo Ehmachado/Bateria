@@ -2,301 +2,496 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Bateria Nec Dia — Final</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;900&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Bateria do Indicador — Corrigido</title>
 <style>
   :root{
-    --title-color:#003399;
-    --bg0:#0b1220; --bg1:#151a2b; --bg2:#1f2336;
-    --card:#12172a; --card-bd:#2e3654;
-    --text:#eef2ff; --muted:#cbd5ff; --divider:#2e3654;
-    --good:#34d399; --warn:#fbbf24; --bad:#f87171;
+    --bg:#1a1f2e; --card:#111827; --text:#e5e7eb; --muted:#9aa4b2;
+    --accent:#3b82f6; --accent-2:#22d3ee; --frame:#0f172a; --seg-bg:#1f2937; --cap:#cbd5e1;
+    --shadow:0 10px 22px rgba(0,0,0,.24); --radius:20px;
   }
-  /* Temas */
-  .theme-bb{--title-color:#003399;--bg0:#ffffff;--bg1:#f6f7ff;--bg2:#e8edff;--card:#ffffff;--text:#0a0f24;--muted:#2d3875;--good:#1b7f3f;--warn:#f59e0b;--bad:#d92d20;}
-  .theme-midnight{--title-color:#9ea5ff;--bg0:#0b1220;--bg1:#151a2b;--bg2:#1f2336;--card:#12172a;--text:#eef2ff;--muted:#aab3e6;--good:#22c55e;--warn:#fbbf24;--bad:#ef4444;}
-  .theme-slate{--title-color:#69c0ff;--bg0:#0f1720;--bg1:#141c27;--bg2:#192330;--card:#121a24;--text:#eaf2ff;--muted:#9fbad6;--good:#16a34a;--warn:#f59e0b;--bad:#f87171;}
-  .theme-sand{--title-color:#d8a85d;--bg0:#1b1815;--bg1:#221f1b;--bg2:#2b2722;--card:#2e2924;--text:#fdf6ec;--muted:#d9c9b1;--good:#22c55e;--warn:#fbbf24;--bad:#f87171;}
-  .theme-emerald{--title-color:#2dd4bf;--bg0:#00201b;--bg1:#02372f;--bg2:#03554a;--card:#063e35;--text:#ecfdf5;--muted:#a7f3d0;--good:#10b981;--warn:#f59e0b;--bad:#dc2626;}
-  .theme-sunset{--title-color:#f59e0b;--bg0:#2b1100;--bg1:#3b1700;--bg2:#522100;--card:#3a1500;--text:#fff7ed;--muted:#fbbf24;--good:#facc15;--warn:#fb923c;--bad:#dc2626;}
-  .theme-ocean{--title-color:#0ea5e9;--bg0:#011d2d;--bg1:#02314c;--bg2:#034769;--card:#023e5e;--text:#e0f2fe;--muted:#bae6fd;--good:#38bdf8;--warn:#fde047;--bad:#f87171;}
+  .theme-blue{ 
+    --bg:#d4e3ff; --card:#fff; --text:#0b1220; --muted:#53607a; 
+    --accent:#003399; --accent-2:#2a56c6; --frame:#0b1a3a; --seg-bg:#e7ecff; 
+    --cap:#c8d2ff; --shadow:0 10px 20px rgba(0,51,153,.16);
+  }
+  .theme-neon{ 
+    --bg:#050a14; --card:#0f172a; --text:#e6f3ff; --muted:#9fb3c8; 
+    --accent:#14b8a6; --accent-2:#22d3ee; --frame:#0ea5e9; --seg-bg:#111827; 
+    --cap:#94a3b8; --shadow:0 10px 26px rgba(34,211,238,.18);
+  }
+  .theme-sunset{ 
+    --bg:#ffe8d6; --card:#fff; --text:#1f2430; --muted:#7a6a62; 
+    --accent:#ef4444; --accent-2:#f59e0b; --frame:#7c2d12; --seg-bg:#ffe9de; 
+    --cap:#fecaca; --shadow:0 10px 22px rgba(245,158,11,.18);
+  }
+  .theme-emerald{ 
+    --bg:#d1f4e0; --card:#fff; --text:#112019; --muted:#5b6d63; 
+    --accent:#10b981; --accent-2:#34d399; --frame:#064e3b; --seg-bg:#dbf7ea; 
+    --cap:#a7f3d0; --shadow:0 10px 22px rgba(16,185,129,.18);
+  }
+  .theme-mono{ 
+    --bg:#e8eaed; --card:#fff; --text:#111827; --muted:#6b7280; 
+    --accent:#111827; --accent-2:#6b7280; --frame:#111827; --seg-bg:#eef0f6; 
+    --cap:#cbd5e1; --shadow:0 8px 16px rgba(17,24,39,.12);
+  }
 
-  body{margin:0;background:var(--bg0);color:var(--text);font-family:Inter,system-ui,Segoe UI,Roboto,Arial;transition:background .3s,color .3s}
-  header{max-width:1080px;margin:10px auto;padding:0 12px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
-  .controls{max-width:1080px;margin:0 auto 10px;padding:0 12px;display:grid;grid-template-columns:1.3fr .8fr .8fr .6fr .6fr auto auto;gap:10px}
-  @media (max-width:900px){.controls{grid-template-columns:1fr 1fr}}
-  label{font-size:11px;font-weight:800;color:var(--muted)}
-  input,select,button{border-radius:12px;border:1px solid var(--divider);background:var(--card);color:var(--text);font-size:14px}
-  input,select{padding:10px 12px}
-  button{padding:10px 14px;font-weight:900;cursor:pointer;border:none}
-  .btn-primary{background:var(--title-color);color:#fff}
-  .btn-ghost{background:transparent;color:var(--text);border:1px solid var(--divider)}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;margin:0;padding:0}
+  body{
+    background:var(--bg); color:var(--text);
+    font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+    display:flex; align-items:center; justify-content:center; padding:16px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  .wrap{width:100%; max-width:460px}
+  .card{
+    background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); 
+    padding:16px; border:1px solid rgba(128,128,128,.15);
+    transition: all 0.3s ease;
+  }
+  header.controls{display:grid; gap:10px; margin-bottom:12px}
+  header.controls select, 
+  header.controls input{
+    width:100%; padding:13px 15px; border-radius:12px; 
+    border:1px solid rgba(128,128,128,.2); 
+    background:#fff; color:#111827; font-weight:600; font-size:15px;
+    transition: border-color 0.2s ease;
+  }
+  header.controls select:focus,
+  header.controls input:focus{
+    outline:none; border-color:var(--accent);
+  }
 
-  /* Área exportável cresce para caber conteúdo */
   #capture{
-    min-width:720px;min-height:720px;width:max-content;height:max-content;
-    margin:0 auto;border-radius:20px;overflow:hidden;
-    border:1px solid var(--divider);
-    background:linear-gradient(160deg,var(--bg0) 0%,var(--bg1) 45%,var(--bg2) 100%);
-    display:grid;grid-template-rows:auto 1fr;
+    background:var(--card); border:1px solid rgba(128,128,128,.15); 
+    border-radius:var(--radius); padding:16px; 
+    position:relative;
+    transition: all 0.3s ease;
+  }
+  .title{
+    text-align:center; font-weight:800; font-size:clamp(18px,5.5vw,22px); 
+    color:var(--accent); margin:0 0 6px;
+    transition: color 0.3s ease;
+  }
+  .sub{
+    margin:0 0 10px; text-align:center; font-size:13px; color:var(--muted);
+    transition: color 0.3s ease;
+  }
+  .tag-need{ 
+    text-align:center; font-weight:800; font-size:clamp(14px,4.5vw,16px); 
+    color:var(--accent-2); margin:14px 0 20px; line-height:1.3;
+    transition: color 0.3s ease;
   }
 
-  .cap-top{display:flex;align-items:center;justify-content:center;border-bottom:1px solid var(--divider);padding:10px}
-  .title{display:flex;align-items:center;gap:10px;text-align:center;max-width:96%}
-  .title h1{margin:0;color:var(--title-color);font-weight:900;line-height:1.1;font-size:34px;word-break:break-word;transition:color .3s}
-  .chip{font-size:12px;font-weight:900;color:#0b1220;background:#ffd54d;border-radius:999px;padding:5px 10px}
+  .battery-container{
+    padding-top: 20px;
+    margin-bottom: 14px;
+  }
 
-  .cap-body{display:grid;grid-template-columns:45% 55%;gap:12px;padding:12px}
-  .battery-card{background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));border:1px solid var(--card-bd);border-radius:14px;display:flex;align-items:center;justify-content:center}
-  .battery{width:100%;max-width:340px;aspect-ratio:1/1.95}
+  .battery{
+    margin:0 auto; width:160px; height:260px;
+    position:relative; padding:10px; border-radius:34px;
+    background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(0,0,0,.12));
+    border:3px solid var(--frame);
+    box-shadow: inset 0 6px 16px rgba(0,0,0,.28), inset 0 -8px 16px rgba(255,255,255,.06);
+    transition: border-color 0.3s ease;
+  }
+  .battery-top{
+    position:absolute; top:-15px; left:50%; transform:translateX(-50%);
+    width:60px; height:13px; border-radius:18px; 
+    background:var(--cap); border:3px solid var(--frame);
+    transition: all 0.3s ease;
+  }
+  .segments{
+    position:relative; height:100%; 
+    display:flex; flex-direction:column-reverse; gap:6px;
+  }
+  .seg{
+    flex:1;
+    border-radius:16px; background:var(--seg-bg); 
+    border:2px solid rgba(0,0,0,.08); 
+    position:relative; overflow:hidden;
+    transition: background-color 0.3s ease;
+  }
+  .seg .fill{
+    position:absolute; inset:0; transform:scaleX(0); transform-origin:left center; 
+    transition:transform .4s ease; 
+    border-radius:14px;
+  }
+  .seg .pct{
+    position:absolute; inset:0; display:grid; place-items:center; 
+    font-weight:800; font-size:12px; color:#fff; 
+    text-shadow:0 1px 3px rgba(0,0,0,.5); opacity:.15; 
+    transition:opacity .25s ease;
+    z-index:2;
+  }
+  .seg.filled .pct{opacity:1}
+  
+  .bolt{
+    position:absolute; inset:0; display:grid; place-items:center; 
+    filter:drop-shadow(0 2px 10px rgba(0,0,0,.35));
+    pointer-events:none; z-index:1;
+  }
+  .bolt svg{
+    width:52px; height:auto; opacity:.85; 
+    transition: color 0.3s ease;
+  }
 
-  .cards-wrap{display:grid;grid-template-rows:auto 1fr;gap:12px}
-  .cards{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  .card{background:var(--card);border:1px solid var(--card-bd);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:6px}
-  .k{font-size:12px;font-weight:900;color:var(--muted)}
-  .v{font-weight:900;line-height:1;color:var(--text);font-size:30px;word-break:break-word;transition:color .3s}
-  .mono{font-variant-numeric:tabular-nums}
+  .only-done{
+    margin-top:8px; text-align:center; font-weight:800; 
+    font-size:clamp(15px,5vw,18px); color:var(--accent);
+    transition: color 0.3s ease;
+  }
+  .legend{
+    margin-top:8px; text-align:center; font-size:13px; color:var(--muted);
+    transition: color 0.3s ease;
+  }
+  .legend strong{color:var(--text); transition: color 0.3s ease;}
 
-  .bottom{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  .prog{grid-column:span 2;background:var(--card);border:1px solid var(--card-bd);border-radius:12px;padding:12px}
-  .bar{height:12px;background:rgba(255,255,255,.06);border:1px solid var(--card-bd);border-radius:999px;overflow:hidden;margin-top:6px}
-  .fill{height:100%;width:0%;background:var(--bad);transition:width .5s,background .5s}
-  .mini{background:var(--card);border:1px solid var(--card-bd);border-radius:12px;padding:12px;display:flex;justify-content:space-between;align-items:center}
-  .upd{justify-self:end;align-self:end;background:var(--card);border:1px solid var(--card-bd);border-radius:10px;padding:6px 10px;font-size:12px;color:var(--muted)}
+  .mini{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px}
+  .mini input{
+    width:100%; padding:13px 15px; border-radius:12px; 
+    border:1px solid rgba(128,128,128,.2); 
+    background:#fff; color:#111827; font-weight:700; font-size:15px;
+    transition: border-color 0.2s ease;
+  }
+  .mini input:focus{
+    outline:none; border-color:var(--accent);
+  }
 
-  #exportSandbox{position:fixed;left:-10000px;top:0;pointer-events:none;opacity:0}
+  .actions{
+    display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-top:12px;
+  }
+  .actions button{
+    padding:13px 10px; border-radius:12px; border:none; 
+    font-weight:800; font-size:14px;
+    cursor:pointer; color:#fff; background:var(--accent);
+    transition: all 0.15s ease;
+    box-shadow: 0 2px 8px rgba(0,0,0,.15);
+  }
+  .actions button.secondary{
+    background:var(--accent-2); color:#0b1220;
+  }
+  .actions button:hover{
+    transform:translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,.2);
+  }
+  .actions button:active{
+    transform:translateY(0);
+    box-shadow: 0 1px 4px rgba(0,0,0,.15);
+  }
+
+  #diag{
+    margin-top:10px; font-size:13px; color:#10b981; 
+    text-align:center; min-height:20px; font-weight:600;
+  }
 </style>
 </head>
-<body class="theme-midnight">
-<header>
-  <div style="display:flex;gap:8px;align-items:center">
-    <label for="theme">Tema:</label>
-    <select id="theme">
-      <option value="theme-bb">BB Clean</option>
-      <option value="theme-midnight" selected>Midnight</option>
-      <option value="theme-slate">Slate</option>
-      <option value="theme-sand">Sand</option>
-      <option value="theme-emerald">Emerald</option>
-      <option value="theme-sunset">Sunset</option>
-      <option value="theme-ocean">Ocean</option>
-    </select>
-  </div>
-  <div style="display:flex;gap:8px">
-    <button id="btnClear" class="btn-ghost">Limpar</button>
-    <button id="btnExport" class="btn-primary">Exportar PNG</button>
-  </div>
-</header>
+<body class="theme-blue">
+  <div class="wrap">
+    <header class="controls">
+      <select id="theme" aria-label="Tema">
+        <option value="theme-blue">Tema 1 — Azul</option>
+        <option value="theme-neon">Tema 2 — Neon Dark</option>
+        <option value="theme-sunset">Tema 3 — Sunset</option>
+        <option value="theme-emerald">Tema 4 — Emerald</option>
+        <option value="theme-mono">Tema 5 — Mono</option>
+      </select>
+      <input id="indicador" placeholder="Nome do Indicador" aria-label="Nome do Indicador"/>
+    </header>
 
-<div class="controls">
-  <div><label for="titulo">Título do Produto</label><input id="titulo" value="Produto Ultra — Seguro Residencial Premium"></div>
-  <div><label for="orcado">Orçado (R$)</label><input id="orcado" type="number" value="1200000"></div>
-  <div><label for="realizado">Realizado (R$)</label><input id="realizado" type="number" value="600000"></div>
-  <div><label for="warn">% Aviso</label><input id="warn" type="number" value="60"></div>
-  <div><label for="ok">% OK</label><input id="ok" type="number" value="95"></div>
-</div>
+    <section id="capture" class="card">
+      <h1 class="title" id="title">Nec Dia — Seguridade</h1>
+      <p class="sub" id="percentTxt">Progresso: 0%</p>
 
-<section id="capture">
-  <div class="cap-top">
-    <div class="title">
-      <h1 id="capTitle">Produto Ultra — Seguro Residencial Premium</h1>
-      <span class="chip">Nec dia</span>
-    </div>
-  </div>
+      <div class="tag-need" id="needTop">Nec Dia: R$ 0,00</div>
 
-  <div class="cap-body">
-    <!-- Bateria de pé -->
-    <div class="battery-card">
-      <div class="battery">
-        <svg viewBox="0 0 320 640" width="100%" height="100%">
-          <defs>
-            <clipPath id="clipCavity"><rect x="64" y="120" width="192" height="420" rx="28"/></clipPath>
-          </defs>
-          <rect x="48" y="96" width="224" height="472" rx="32" fill="#1a2136" stroke="#2e3654" stroke-width="2"/>
-          <rect x="128" y="60" width="64" height="28" rx="10" fill="#1a2136" stroke="#2e3654" stroke-width="2"/>
-          <g clip-path="url(#clipCavity)">
-            <rect x="64" y="120" width="192" height="420" fill="#2c2a46"/>
-            <rect id="level" x="64" y="540" width="192" height="0" fill="#16a34a"/>
-          </g>
-        </svg>
-      </div>
-    </div>
-
-    <!-- Cards -->
-    <div class="cards-wrap">
-      <div class="cards">
-        <div class="card"><div class="k">Orçado</div><div id="mOrcado" class="v mono">—</div></div>
-        <div class="card"><div class="k">Realizado</div><div id="mRealizado" class="v mono">—</div></div>
-        <div class="card"><div class="k">% Atingimento</div><div id="mPct" class="v mono">0%</div></div>
-        <div class="card"><div class="k">Status</div><div id="mState" class="v">—</div></div>
-      </div>
-
-      <div class="bottom">
-        <div class="prog card">
-          <div style="display:flex;justify-content:space-between;align-items:center">
-            <div class="k">Progresso</div>
-            <div id="lblPct" class="v mono">0%</div>
+      <div class="battery-container">
+        <div class="battery">
+          <div class="battery-top"></div>
+          <div class="bolt" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M13.5 2L4 13h6l-1.5 9L21 10h-6l1.5-8z" stroke="currentColor" stroke-width="1.5"/>
+            </svg>
           </div>
-          <div class="bar"><div id="barFill" class="fill"></div></div>
+          <div class="segments" id="segments"></div>
         </div>
-
-        <!-- Restante p/ Meta (título em cima, valor embaixo) -->
-        <div class="mini" style="flex-direction:column;align-items:flex-start">
-          <div class="k" style="margin-bottom:6px">Restante p/ Meta</div>
-          <div id="lblRestante" class="v mono" style="font-size:28px;text-align:left;width:100%">—</div>
-        </div>
-
-        <div class="mini"><div class="k">Velocidade esperada</div><div id="mVE" class="v mono">0%</div></div>
-
-        <!-- Falta p/ VE (título em cima, valor embaixo) -->
-        <div class="mini" style="flex-direction:column;align-items:flex-start">
-          <div class="k" style="margin-bottom:6px">Falta p/ VE</div>
-          <div id="mFaltaVE" class="v mono" style="font-size:28px;text-align:left;width:100%">—</div>
-        </div>
-
-        <div class="mini"><div class="k">Status vs VE</div><div id="mStatus" class="v">—</div></div>
-        <div class="upd" id="updateCard">Atualizado às —:—</div>
       </div>
+
+      <div class="only-done" id="doneBottom">Realizado: R$ 0,00</div>
+      <div class="legend" id="legend">
+        Falta: <strong>R$ 0,00</strong> • Atualizado às <strong>--:--</strong>
+      </div>
+    </section>
+
+    <div class="mini">
+      <input id="necessidade" inputmode="decimal" placeholder="Nec Dia (R$)" aria-label="Necessidade em Reais"/>
+      <input id="realizado" inputmode="decimal" placeholder="Realizado (R$)" aria-label="Realizado em Reais"/>
     </div>
+
+    <div class="actions" role="group" aria-label="Ações">
+      <button id="btnUpdate" type="button">Atualizar</button>
+      <button id="btnClear" type="button" class="secondary">Limpar</button>
+      <button id="btnPNG" type="button">Exportar PNG</button>
+    </div>
+
+    <div id="diag" aria-live="polite"></div>
   </div>
-</section>
 
-<div id="exportSandbox"></div>
-
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script>
 (function(){
+  'use strict';
+  
   const $ = s => document.querySelector(s);
-  const $$ = s => Array.from(document.querySelectorAll(s));
-  const fmtBRL = n => isNaN(n)?'—':n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-  const pctTxt = p => isFinite(p)?`${Math.max(0,Math.min(999,p)).toFixed(1)}%`:'0%';
-  const body = document.body;
+  const $$ = s => document.querySelectorAll(s);
+  
+  let state = {
+    tema: 'theme-blue',
+    indicador: 'Nec Dia — Seguridade',
+    necessidade: 0,
+    realizado: 0
+  };
 
-  // refs UI
-  const capTitle=$('#capTitle'), mOrcado=$('#mOrcado'), mRealizado=$('#mRealizado'), mPct=$('#mPct'),
-        mState=$('#mState'), lblPct=$('#lblPct'), barFill=$('#barFill'), lblRestante=$('#lblRestante'),
-        mVE=$('#mVE'), mFaltaVE=$('#mFaltaVE'), mStatus=$('#mStatus'), updateCard=$('#updateCard'),
-        level=$('#level'), capture=$('#capture'), sandbox=$('#exportSandbox');
-
-  // helpers
-  const getNum = sel => parseFloat($(sel).value.replace(',', '.')) || 0;
-
-  function update(){
-    const titulo = $('#titulo').value || 'Produto';
-    const orcado = getNum('#orcado');
-    const realizado = getNum('#realizado');
-    const warn = getNum('#warn') || 60;
-    const ok = getNum('#ok') || 95;
-
-    capTitle.textContent = titulo;
-    mOrcado.textContent = fmtBRL(orcado);
-    mRealizado.textContent = fmtBRL(realizado);
-
-    const pct = orcado > 0 ? (realizado / orcado) * 100 : 0;
-    const clamp = Math.max(0, Math.min(100, pct));
-    mPct.textContent = pctTxt(pct);
-    lblPct.textContent = pctTxt(pct);
-
-    // cores do tema
-    const BAD = getComputedStyle(body).getPropertyValue('--bad').trim() || '#ef4444';
-    const WARN = getComputedStyle(body).getPropertyValue('--warn').trim() || '#f59e0b';
-    const GOOD = getComputedStyle(body).getPropertyValue('--good').trim() || '#16a34a';
-    let corAtual = BAD;
-    if (clamp >= ok) corAtual = GOOD;
-    else if (clamp >= warn) corAtual = WARN;
-
-    // barra & status por progresso/tema
-    barFill.style.width = clamp + '%';
-    barFill.style.background = corAtual;
-    mPct.style.color = corAtual;
-    mState.style.color = corAtual;
-
-    let stTxt = 'Abaixo do ritmo';
-    if (clamp >= ok) stTxt = 'Meta no alvo';
-    else if (clamp >= warn) stTxt = 'Em atenção';
-    mState.textContent = stTxt;
-
-    // bateria (nível e cor)
-    const CAV_Y=120, CAV_H=420, BASE_Y=CAV_Y+CAV_H;
-    const h=(CAV_H*clamp)/100, y=BASE_Y-h;
-    level.setAttribute('y', y.toFixed(2));
-    level.setAttribute('height', h.toFixed(2));
-    level.setAttribute('fill', corAtual);
-
-    // restante / VE
-    const restante = Math.max(0, orcado - realizado);
-    lblRestante.textContent = fmtBRL(restante);
-
-    const now = new Date();
-    const ve = (Math.max(0, Math.min(9, (now.getHours()+now.getMinutes()/60) - 9)) / 9) * 100;
-    mVE.textContent = pctTxt(ve);
-    const esperado = orcado * (ve/100);
-    const faltaVE = Math.max(0, esperado - realizado);
-    mFaltaVE.textContent = fmtBRL(faltaVE);
-
-    let vsTxt='Abaixo da VE', vsCol=BAD;
-    if (pct >= ve + 1) { vsTxt='Acima da VE'; vsCol=GOOD; }
-    else if (Math.abs(pct - ve) < 1) { vsTxt='No ritmo'; vsCol=WARN; }
-    mStatus.textContent = vsTxt;
-    mStatus.style.color = vsCol;
-
-    updateCard.textContent = `Atualizado às ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
-
-    // garante dimensão exata p/ export
-    const r = capture.getBoundingClientRect();
-    capture.style.width = Math.ceil(r.width) + 'px';
-    capture.style.height= Math.ceil(r.height) + 'px';
+  function diag(msg) {
+    const el = $('#diag');
+    if (el) {
+      el.textContent = msg;
+      if (msg) setTimeout(() => el.textContent = '', 3000);
+    }
   }
 
-  async function exportPNG(){
-    update();
-    const r = capture.getBoundingClientRect();
-    const w = Math.ceil(r.width), h = Math.ceil(r.height);
-    sandbox.innerHTML = '';
-    const clone = capture.cloneNode(true);
-    clone.style.width = w+'px';
-    clone.style.height= h+'px';
-    sandbox.appendChild(clone);
-    await new Promise(r=>requestAnimationFrame(r));
-    const bg = getComputedStyle(document.body).getPropertyValue('--bg0').trim() || '#0b1220';
-    const canvas = await html2canvas(clone,{backgroundColor:bg,scale:2,width:w,height:h,useCORS:true});
-    const blob = await new Promise(res=>canvas.toBlob(res,'image/png'));
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'bateria_nec_dia.png';
-    document.body.appendChild(a); a.click(); a.remove();
-    sandbox.innerHTML='';
+  function safeLS(action, key, value) {
+    try {
+      if (action === 'get') return localStorage.getItem(key);
+      if (action === 'set') localStorage.setItem(key, value);
+      if (action === 'remove') localStorage.removeItem(key);
+    } catch(e) { return null; }
   }
 
-  function clearAll(){
-    $('#titulo').value='';
-    $('#orcado').value='';
-    $('#realizado').value='';
-    $('#warn').value='60';
-    $('#ok').value='95';
-    update();
+  function parseBR(str) {
+    if (!str) return 0;
+    const s = String(str).replace(/[R$\s]/g, '').trim();
+    const hasComma = s.includes(',');
+    const hasDot = s.includes('.');
+    
+    let num = s;
+    if (hasComma && hasDot) {
+      num = s.replace(/\./g, '').replace(',', '.');
+    } else if (hasComma) {
+      num = s.replace(',', '.');
+    }
+    
+    const result = parseFloat(num);
+    return isNaN(result) ? 0 : result;
   }
 
-  // Bind de eventos (inputs + change) — FUNCIONANDO
-  function bindEvents(){
-    $$('#theme').forEach?null:0; // no-op só pra evitar tree-shake
-    ['#titulo','#orcado','#realizado','#warn','#ok'].forEach(sel=>{
-      const el = $(sel);
-      el.addEventListener('input', update);
-      el.addEventListener('change', update);
+  function fmtBRL(v) {
+    return v.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
+  }
+
+  function loadState() {
+    state.tema = safeLS('get', 'tema') || 'theme-blue';
+    state.indicador = safeLS('get', 'indicador') || 'Nec Dia — Seguridade';
+    state.necessidade = parseBR(safeLS('get', 'necessidade'));
+    state.realizado = parseBR(safeLS('get', 'realizado'));
+  }
+
+  function saveState() {
+    safeLS('set', 'tema', state.tema);
+    safeLS('set', 'indicador', state.indicador);
+    safeLS('set', 'necessidade', state.necessidade);
+    safeLS('set', 'realizado', state.realizado);
+  }
+
+  function applyTheme(theme) {
+    const themes = ['theme-blue', 'theme-neon', 'theme-sunset', 'theme-emerald', 'theme-mono'];
+    themes.forEach(t => document.body.classList.remove(t));
+    document.body.classList.add(theme);
+  }
+
+  function colorFor(i, total) {
+    const t = total <= 1 ? 0 : i / (total - 1);
+    const h = 0 + (120 * t);
+    return `linear-gradient(90deg, hsl(${h} 85% 50%), hsl(${h} 85% 45%))`;
+  }
+
+  function buildSegments() {
+    const container = $('#segments');
+    container.innerHTML = '';
+    
+    for (let i = 1; i <= 10; i++) {
+      const seg = document.createElement('div');
+      seg.className = 'seg';
+      seg.dataset.index = i;
+      
+      const fill = document.createElement('div');
+      fill.className = 'fill';
+      
+      const pct = document.createElement('div');
+      pct.className = 'pct';
+      pct.textContent = `${i * 10}%`;
+      
+      seg.appendChild(fill);
+      seg.appendChild(pct);
+      container.appendChild(seg);
+    }
+  }
+
+  function render() {
+    applyTheme(state.tema);
+    
+    const percent = state.necessidade > 0 ? 
+      Math.min(1, Math.max(0, state.realizado / state.necessidade)) : 0;
+    const p100 = Math.round(percent * 100);
+    
+    $('#title').textContent = state.indicador;
+    $('#percentTxt').textContent = `Progresso: ${p100}%`;
+    $('#needTop').textContent = `Nec Dia: ${fmtBRL(state.necessidade)}`;
+    $('#doneBottom').textContent = `Realizado: ${fmtBRL(state.realizado)}`;
+    
+    const segs = Array.from($$('#segments .seg'));
+    const filled = Math.floor(percent * 10);
+    const partial = (percent * 10) - filled;
+    
+    segs.forEach((seg, i) => {
+      const fill = seg.querySelector('.fill');
+      const pct = seg.querySelector('.pct');
+      const segIndex = parseInt(seg.dataset.index);
+      
+      fill.style.background = colorFor(segIndex - 1, 10);
+      
+      if (segIndex <= filled) {
+        seg.classList.add('filled');
+        fill.style.transform = 'scaleX(1)';
+        pct.textContent = `${segIndex * 10}%`;
+      } else if (segIndex === filled + 1 && partial > 0) {
+        seg.classList.add('filled');
+        fill.style.transform = `scaleX(${partial})`;
+        pct.textContent = `${Math.round(percent * 100)}%`;
+      } else {
+        seg.classList.remove('filled');
+        fill.style.transform = 'scaleX(0)';
+        pct.textContent = `${segIndex * 10}%`;
+      }
     });
-    $('#theme').addEventListener('change', e=>{
-      // troca de classe do body para o tema selecionado
-      body.className = e.target.value;
-      update();
-    });
-    $('#btnExport').addEventListener('click', exportPNG);
-    $('#btnClear').addEventListener('click', clearAll);
+    
+    const falta = Math.max(0, state.necessidade - state.realizado);
+    const hora = new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'});
+    $('#legend').innerHTML = `Falta: <strong>${fmtBRL(falta)}</strong> • Atualizado às <strong>${hora}</strong>`;
+    
+    saveState();
   }
 
-  // Inicializa
-  bindEvents();
-  update();
+  function init() {
+    loadState();
+    buildSegments();
+    
+    const themeSel = $('#theme');
+    const indicador = $('#indicador');
+    const inNec = $('#necessidade');
+    const inReal = $('#realizado');
+    
+    themeSel.value = state.tema;
+    indicador.value = state.indicador;
+    inNec.value = state.necessidade ? String(state.necessidade).replace('.', ',') : '';
+    inReal.value = state.realizado ? String(state.realizado).replace('.', ',') : '';
+    
+    themeSel.addEventListener('change', e => {
+      state.tema = e.target.value;
+      render();
+      diag('✔ Tema alterado');
+    });
+    
+    indicador.addEventListener('input', e => {
+      state.indicador = e.target.value || 'Indicador';
+      render();
+    });
+    
+    inNec.addEventListener('input', e => {
+      state.necessidade = parseBR(e.target.value);
+      render();
+    });
+    
+    inReal.addEventListener('input', e => {
+      state.realizado = parseBR(e.target.value);
+      render();
+    });
+    
+    $('#btnUpdate').addEventListener('click', () => {
+      state.necessidade = parseBR(inNec.value);
+      state.realizado = parseBR(inReal.value);
+      render();
+      diag('✔ Atualizado!');
+    });
+    
+    $('#btnClear').addEventListener('click', () => {
+      state = {
+        tema: 'theme-blue',
+        indicador: 'Nec Dia — Seguridade',
+        necessidade: 0,
+        realizado: 0
+      };
+      safeLS('remove', 'tema');
+      safeLS('remove', 'indicador');
+      safeLS('remove', 'necessidade');
+      safeLS('remove', 'realizado');
+      
+      themeSel.value = state.tema;
+      indicador.value = state.indicador;
+      inNec.value = '';
+      inReal.value = '';
+      render();
+      diag('✔ Limpo!');
+    });
+    
+    $('#btnPNG').addEventListener('click', async () => {
+      if (typeof html2canvas !== 'function') {
+        diag('❌ html2canvas não disponível');
+        return;
+      }
+      
+      try {
+        diag('Gerando PNG...');
+        
+        const captureNode = $('#capture');
+        const bgColor = getComputedStyle(document.body).backgroundColor;
+        
+        const canvas = await html2canvas(captureNode, {
+          backgroundColor: bgColor,
+          scale: 2,
+          useCORS: true,
+          logging: false,
+          width: captureNode.offsetWidth,
+          height: captureNode.offsetHeight
+        });
+        
+        canvas.toBlob(blob => {
+          const nome = state.indicador.replace(/[^\w\s-]/g, '').trim() || 'indicador';
+          const ts = new Date().toISOString().slice(0, 16).replace('T', '_').replace(':', '-');
+          const a = document.createElement('a');
+          a.href = URL.createObjectURL(blob);
+          a.download = `${nome}_${ts}.png`;
+          a.click();
+          URL.revokeObjectURL(a.href);
+          diag('✔ PNG exportado!');
+        });
+      } catch(e) {
+        diag('❌ Erro ao exportar');
+        console.error(e);
+      }
+    });
+    
+    render();
+    diag('✔ Sistema pronto!');
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
 })();
 </script>
 </body>
